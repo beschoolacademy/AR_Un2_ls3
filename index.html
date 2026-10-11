@@ -1,0 +1,2311 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>be;school | مدرسة البرمجة - الدرس 2-3: الاستجابة للحوادث وإدارة المخاطر</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        beschool: {
+                            orange: '#FF5500',
+                            orangeDark: '#E04A00',
+                            orangeLight: '#FFF4ED',
+                            navy: '#0B1B48',
+                            navyLight: '#14285D',
+                            navyDark: '#07112E',
+                            slate: '#334155',
+                            muted: '#64748B',
+                            border: '#E2E8F0',
+                            bg: '#F8FAFC',
+                            card: '#FFFFFF'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'Segoe UI', 'Tahoma', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #F8FAFC;
+            color: #0B1B48;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        .flashcard-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF5500;
+        }
+
+        .main-top-tab {
+            position: relative;
+            transition: all 0.25s ease;
+        }
+        .main-top-tab.active {
+            color: #FF5500;
+            background-color: #FFFFFF;
+            border-bottom: 3.5px solid #FF5500;
+            font-weight: 800;
+        }
+        .main-top-tab:not(.active) {
+            color: #64748B;
+            background-color: transparent;
+            border-bottom: 3.5px solid transparent;
+        }
+        .main-top-tab:not(.active):hover {
+            color: #0B1B48;
+            background-color: #F1F5F9;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-900 antialiased selection:bg-orange-500 selection:text-white font-sans">
+
+    <!-- 1. الشاشة الافتتاحية الأولى (#screen-landing) -->
+    <div id="screen-landing" class="min-h-screen flex flex-col bg-[#0d1527] fade-in">
+        <div class="w-full bg-[#0d1527] text-white px-4 py-3 border-b border-slate-800/80 flex items-center justify-between">
+            <button onclick="window.close()" class="w-9 h-9 rounded-full bg-slate-800/90 text-slate-300 hover:text-white flex items-center justify-center transition" title="إغلاق">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+            <span class="text-xs sm:text-sm font-bold text-slate-200 tracking-wide">
+                مراجعة الدرس 2-3 - Be School
+            </span>
+            <button class="w-9 h-9 rounded-full bg-slate-800/90 text-slate-300 hover:text-white flex items-center justify-center transition" title="خيارات">
+                <i class="fa-solid fa-ellipsis text-sm"></i>
+            </button>
+        </div>
+
+        <div class="bg-gradient-to-b from-white via-orange-50/20 to-white pt-10 pb-12 px-4 sm:px-6 text-center border-b border-slate-200/60">
+            <div class="max-w-md mx-auto space-y-4">
+                <div class="inline-flex flex-col items-center select-none">
+                    <div dir="ltr" class="flex items-baseline font-black text-4xl sm:text-5xl tracking-tight leading-none">
+                        <span class="text-beschool-orange font-black">be</span><span class="text-beschool-orange font-black">;</span><span class="text-beschool-navy font-black">school</span>
+                    </div>
+                    <span class="text-sm font-black text-beschool-navy tracking-wider mt-1.5">مدرسة البرمجة</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0B1B48] leading-tight pt-2">
+                    منصة Be School للمراجعة التفاعلية
+                </h1>
+                <p class="text-xs text-slate-500 font-bold max-w-xs mx-auto">
+                    البرمجة والذكاء الاصطناعي • الصف الثاني الثانوي 2026/2027
+                </p>
+            </div>
+        </div>
+
+        <div class="flex-grow flex flex-col justify-center max-w-md w-full mx-auto px-4 py-8 space-y-5">
+            <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-100 text-center space-y-4">
+                <div class="inline-flex items-center gap-1.5 bg-orange-100 text-beschool-orange px-3 py-1 rounded-full text-xs font-black">
+                    <i class="fa-solid fa-shield-virus"></i>
+                    <span>الوحدة الثانية: الأمن السيبراني • الدرس 2-3</span>
+                </div>
+                
+                <h2 class="text-xl sm:text-2xl font-black text-beschool-navy leading-snug">
+                    الاستجابة للحوادث وإدارة المخاطر
+                </h2>
+
+                <p class="text-xs text-slate-500 leading-relaxed font-medium">
+                    مراحل خطة الاستجابة الست، مصفوفة تقييم المخاطر (التأثير × الاحتمالية)، وتحديد أولويات المعالجة.
+                </p>
+
+                <div class="pt-2">
+                    <button onclick="goToNameEntryScreen()" class="w-full py-3.5 px-6 rounded-2xl bg-beschool-orange hover:bg-beschool-orangeDark text-white font-black text-base shadow-lg shadow-orange-500/30 active:scale-[0.98] transition flex items-center justify-center gap-2">
+                        <span>ابدأ المراجعة</span>
+                        <span class="text-lg">🎯</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-md text-center">
+                <p class="text-[11px] sm:text-xs text-slate-600 font-bold leading-relaxed">
+                    مرحباً بك في مراجعة الدرس الختامي للوحدة الثانية لمادة البرمجة والذكاء الاصطناعي.
+                </p>
+            </div>
+        </div>
+
+        <div class="py-4 text-center text-[11px] text-slate-400">
+            be;school © مدرسة البرمجة 2026/2027
+        </div>
+    </div>
+
+    <!-- 2. شاشة تسجيل اسم الطالب (#screen-name-entry) -->
+    <div id="screen-name-entry" class="hidden min-h-screen flex flex-col bg-[#0d1527] fade-in">
+        <div class="w-full bg-[#0d1527] text-white px-4 py-3 border-b border-slate-800/80 flex items-center justify-between">
+            <button onclick="goToLandingScreen()" class="w-9 h-9 rounded-full bg-slate-800/90 text-slate-300 hover:text-white flex items-center justify-center transition" title="رجوع">
+                <i class="fa-solid fa-arrow-right text-sm"></i>
+            </button>
+            <span class="text-xs sm:text-sm font-bold text-slate-200">
+                تسجيل اسم الطالب
+            </span>
+            <div class="w-9"></div>
+        </div>
+
+        <div class="flex-grow flex items-center justify-center p-4">
+            <div class="max-w-md w-full bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 space-y-6">
+                <div class="text-center space-y-2">
+                    <div class="w-16 h-16 rounded-2xl bg-orange-100 text-beschool-orange mx-auto flex items-center justify-center text-2xl shadow-inner">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-black text-beschool-navy">
+                        سجل اسمك للمتابعة
+                    </h3>
+                    <p class="text-xs text-slate-500 font-medium">
+                        أدخل اسمك لعرض نتيجتك وتقييمك في اختبار الاستجابة للحوادث وإدارة المخاطر (50 سؤالاً)
+                    </p>
+                </div>
+
+                <div class="space-y-2 text-right">
+                    <label for="studentNameInput" class="block text-xs font-black text-beschool-navy">
+                        اسم الطالب / الطالبة:
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="studentNameInput" 
+                            dir="rtl"
+                            placeholder="اكتب اسمك هنا..." 
+                            maxlength="40"
+                            onkeypress="if(event.key === 'Enter') startPlatformWithStudentName()"
+                            class="w-full py-3.5 pr-11 pl-4 rounded-xl border-2 border-slate-200 focus:border-beschool-orange focus:outline-none text-sm font-bold text-beschool-navy placeholder:text-slate-400 transition"
+                        />
+                        <i class="fa-regular fa-id-card absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    </div>
+                    <div id="nameErrorAlert" class="hidden text-[11px] font-bold text-rose-600 flex items-center gap-1 mt-1">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span>يرجى إدخال اسمك للمتابعة!</span>
+                    </div>
+                </div>
+
+                <button onclick="startPlatformWithStudentName()" class="w-full py-3.5 px-6 rounded-2xl bg-beschool-orange hover:bg-beschool-orangeDark text-white font-black text-sm sm:text-base shadow-lg shadow-orange-500/30 active:scale-[0.98] transition flex items-center justify-center gap-2">
+                    <span>دخول المنصة والمراجعة</span>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. المنصة التعليمية الرئيسية (#screen-main-platform) -->
+    <div id="screen-main-platform" class="hidden min-h-screen flex flex-col bg-[#F8FAFC] fade-in">
+        <header class="sticky top-0 z-50 bg-white border-b border-beschool-border shadow-xs">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="h-20 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="flex flex-col select-none cursor-pointer group items-center sm:items-start" onclick="switchNavTab('study')">
+                            <div dir="ltr" class="flex items-baseline font-black text-3xl sm:text-4xl tracking-tight leading-none">
+                                <span class="text-beschool-orange font-black">be</span><span class="text-beschool-orange font-black">;</span><span class="text-beschool-navy font-black">school</span>
+                            </div>
+                            <span class="text-xs sm:text-sm font-black text-beschool-navy tracking-wider mt-1 text-center w-full group-hover:text-beschool-orange transition-colors">مدرسة البرمجة</span>
+                        </div>
+                        <div class="hidden md:block h-10 w-px bg-beschool-border mr-2"></div>
+                        <div class="hidden md:flex flex-col">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-black bg-orange-50 text-beschool-orange border border-orange-200/80 w-fit">
+                                <i class="fa-solid fa-graduation-cap text-[10px]"></i>
+                                منهج الحاسب والذكاء الاصطناعي 2026/2027
+                            </span>
+                            <span class="text-xs font-bold text-beschool-slate mt-1">الصف الثاني الثانوي • الوحدة الثانية: الأمن السيبراني</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <div class="flex items-center gap-2 bg-orange-50/80 border border-orange-200 px-3 py-1.5 rounded-xl">
+                            <i class="fa-solid fa-user-check text-beschool-orange text-xs"></i>
+                            <span id="headerStudentName" class="text-xs font-black text-beschool-navy max-w-[110px] sm:max-w-xs truncate">
+                                طالب Be School
+                            </span>
+                        </div>
+                        <button onclick="exitToLanding()" title="خروج" class="p-2.5 rounded-xl border border-beschool-border hover:bg-rose-50 hover:text-rose-600 text-beschool-slate text-xs font-bold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
+                            <span class="hidden sm:inline">خروج</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 border-t border-beschool-border">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <nav class="flex items-center justify-center sm:justify-start gap-1 sm:gap-3 text-xs sm:text-base font-bold overflow-x-auto py-1">
+                        <button id="tabNav-study" onclick="switchNavTab('study')" class="main-top-tab active flex-1 sm:flex-initial py-3 px-3 sm:px-5 rounded-t-xl flex items-center justify-center gap-2 shrink-0">
+                            <i class="fa-solid fa-book-open text-sm sm:text-base"></i>
+                            <span>1. الشرح التفاعلي</span>
+                        </button>
+                        <button id="tabNav-revision" onclick="switchNavTab('revision')" class="main-top-tab flex-1 sm:flex-initial py-3 px-3 sm:px-5 rounded-t-xl flex items-center justify-center gap-2 shrink-0">
+                            <i class="fa-solid fa-layer-group text-sm sm:text-base"></i>
+                            <span>2. المراجعة السريعة</span>
+                        </button>
+                        <button id="tabNav-book-solutions" onclick="switchNavTab('book-solutions')" class="main-top-tab flex-1 sm:flex-initial py-3 px-3 sm:px-5 rounded-t-xl flex items-center justify-center gap-2 shrink-0">
+                            <i class="fa-solid fa-book-bookmark text-sm sm:text-base text-beschool-orange"></i>
+                            <span>3. حل تمارين الكتاب</span>
+                        </button>
+                        <button id="tabNav-questions" onclick="switchNavTab('questions')" class="main-top-tab flex-1 sm:flex-initial py-3 px-3 sm:px-5 rounded-t-xl flex items-center justify-center gap-2 shrink-0">
+                            <i class="fa-solid fa-circle-question text-sm sm:text-base"></i>
+                            <span>4. الاختبار (50 سؤالاً)</span>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+            <!-- Banner Header -->
+            <div class="bg-white rounded-2xl p-5 sm:p-7 border border-beschool-border shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-1.5">
+                    <div class="flex items-center gap-2 text-xs font-bold text-beschool-muted">
+                        <span>الوحدة الثانية: الأمن السيبراني</span>
+                        <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                        <span class="text-beschool-orange font-black">الدرس 2-3 (الدرس الختامي للوحدة)</span>
+                    </div>
+                    <h1 class="text-xl sm:text-2xl lg:text-3xl font-black text-beschool-navy">
+                        الاستجابة للحوادث وإدارة المخاطر (Incident Response & Risk Management)
+                    </h1>
+                    <p class="text-xs sm:text-sm text-beschool-muted">
+                        التعامل مع الأزمات الرقمية، دورة حياة الاستجابة السداسية، مصفوفة تقييم الخطر (الاحتمالية × التأثير)، واستمرارية الأعمال.
+                    </p>
+                </div>
+                <button onclick="switchNavTab('questions')" class="px-5 py-2.5 rounded-xl bg-beschool-orange hover:bg-beschool-orangeDark text-white text-xs sm:text-sm font-black flex items-center gap-2 shadow-xs transition">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span>دخول الاختبار (50 سؤالاً)</span>
+                </button>
+            </div>
+
+            <!-- ========================================================================= -->
+            <!-- 1. تبويب الشرح (STUDY TAB) -->
+            <!-- ========================================================================= -->
+            <div id="pane-study" class="space-y-6">
+                <!-- فكرة مدخل الدرس -->
+                <div class="bg-gradient-to-r from-beschool-navy via-beschool-navyLight to-[#1e3a8a] text-white rounded-3xl p-6 sm:p-8 shadow-md relative overflow-hidden">
+                    <div class="relative z-10 space-y-3">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black bg-beschool-orange text-white shadow-xs">
+                            <i class="fa-solid fa-fire-extinguisher"></i>
+                            <span>حين يقع المحظور: كيف تدير المؤسسة أسوأ كوابيس الاختراق؟</span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl lg:text-3xl font-black leading-snug">
+                            حتى مع استخدام وسائل الحماية والدفاع في العمق.. قد يقع حادث أمني!
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-200 leading-relaxed max-w-3xl">
+                            الأمن السيبراني لا يعتمد على الوقاية فقط، بل يجب الاستعداد أيضاً للتعامل مع الحادث إذا وقع. من أجل ذلك تستخدم المؤسسات خطة منظمة لوقف انتشار المشكلة، وإزالة التهديد، واستعادة الخدمة، ثم التعلم من الحادث وتحسين الحماية مستقبلاً.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- الرسم التوضيحي 1: مفهوم الحادث الأمني وأشكاله الثلاثة النموذجية -->
+                <div class="bg-white rounded-2xl p-6 border border-beschool-border shadow-xs space-y-5">
+                    <div class="border-b border-beschool-border pb-3 flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-black bg-beschool-navy text-white px-2.5 py-0.5 rounded-md">المحور الأول</span>
+                            <h3 class="text-lg sm:text-xl font-black text-beschool-navy mt-1">الحادث الأمني (Security Incident) وأشكاله الثلاثة النموذجية</h3>
+                        </div>
+                        <span class="text-xs font-bold text-beschool-muted">كتاب الوزارة ص 46</span>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs sm:text-sm">
+                        <strong class="font-black text-beschool-navy block">تعريف الحادث الأمني:</strong>
+                        <p class="text-slate-700 leading-relaxed">
+                            حدث يؤثر في سرية المعلومات أو سلامتها أو توافرها (ثالوث أمان المعلومات)، أو يهددها بجدية، أو يخالف سياسة أمنية معتمدة بالمؤسسة.
+                        </p>
+                    </div>
+
+                    <!-- رسم الأشكال الثلاثة النموذجية للحادث الأمني -->
+                    <div class="space-y-3">
+                        <h4 class="text-xs sm:text-sm font-black text-beschool-navy">الأنواع الثلاثة الشائعة للحوادث الأمنية:</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                            <div class="p-4 rounded-xl bg-orange-50/60 border border-orange-200 space-y-2 text-right">
+                                <div class="w-10 h-10 rounded-xl bg-orange-100 text-beschool-orange flex items-center justify-center text-lg font-black">
+                                    <i class="fa-solid fa-file-export"></i>
+                                </div>
+                                <strong class="text-beschool-navy font-black text-sm block">1. تسرب المعلومات (Data Breach)</strong>
+                                <p class="text-slate-600 leading-relaxed">تسرب المعلومات الشخصية أو السرية إلى الخارج ووصول غير المصرح لهم إليها.</p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-purple-50/60 border border-purple-200 space-y-2 text-right">
+                                <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center text-lg font-black">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </div>
+                                <strong class="text-beschool-navy font-black text-sm block">2. التلاعب بالبيانات (Data Tampering)</strong>
+                                <p class="text-slate-600 leading-relaxed">تعديل البيانات داخل نظام ما دون تصريح، مما يخل بسلامة وموثوقية السجلات.</p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-rose-50/60 border border-rose-200 space-y-2 text-right">
+                                <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-lg font-black">
+                                    <i class="fa-solid fa-ban"></i>
+                                </div>
+                                <strong class="text-beschool-navy font-black text-sm block">3. انقطاع الخدمة (Service Outage)</strong>
+                                <p class="text-slate-600 leading-relaxed">تصبح الخدمة غير متاحة بسبب هجمات على الخادم (مثل هجمات حجب الخدمة DDoS).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الرسم التوضيحي 2: رسم عزل الجزء المتأثر (الاحتواء - ص 46) -->
+                <div class="bg-white rounded-2xl p-6 border border-beschool-border shadow-xs space-y-4">
+                    <div class="border-b border-beschool-border pb-3 flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-black bg-beschool-navy text-white px-2.5 py-0.5 rounded-md">رسم توضيحي من الكتاب ص 46</span>
+                            <h3 class="text-lg sm:text-xl font-black text-beschool-navy mt-1">مفهوم الاحتواء: عزل الجزء المتأثر لمنع انتشار الضرر</h3>
+                        </div>
+                        <span class="text-xs font-bold text-beschool-muted">Containment In Practice</span>
+                    </div>
+
+                    <!-- SVG Containment Barrier Drawing (طابق رسم ص 46) -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                        <div class="w-full overflow-x-auto">
+                            <svg viewBox="0 0 720 220" class="w-full h-auto min-w-[650px] select-none font-sans" dir="ltr">
+                                <!-- Background Network Grid -->
+                                <rect x="0" y="0" width="720" height="220" fill="#F8FAFC" rx="12"/>
+                                
+                                <!-- Normal Connected Devices (Safe Network) -->
+                                <g transform="translate(380, 25)">
+                                    <!-- Device 1 -->
+                                    <rect x="0" y="20" width="70" height="50" rx="6" fill="#0B1B48"/>
+                                    <rect x="5" y="25" width="60" height="35" rx="3" fill="#38BDF8"/>
+                                    <rect x="25" y="70" width="20" height="15" fill="#334155"/>
+                                    <text x="35" y="100" font-size="10" font-weight="900" fill="#0B1B48" text-anchor="middle">حاسوب 1 (سليم)</text>
+
+                                    <!-- Device 2 -->
+                                    <rect x="140" y="20" width="70" height="50" rx="6" fill="#0B1B48"/>
+                                    <rect x="145" y="25" width="60" height="35" rx="3" fill="#38BDF8"/>
+                                    <rect x="165" y="70" width="20" height="15" fill="#334155"/>
+                                    <text x="175" y="100" font-size="10" font-weight="900" fill="#0B1B48" text-anchor="middle">حاسوب 2 (سليم)</text>
+
+                                    <!-- Device 3 (Server) -->
+                                    <rect x="250" y="10" width="50" height="75" rx="4" fill="#0B1B48"/>
+                                    <circle cx="275" cy="25" r="4" fill="#10B981"/>
+                                    <circle cx="275" cy="45" r="4" fill="#10B981"/>
+                                    <circle cx="275" cy="65" r="4" fill="#10B981"/>
+                                    <text x="275" y="100" font-size="10" font-weight="900" fill="#0B1B48" text-anchor="middle">خادم المؤسسة</text>
+
+                                    <!-- Network Lines -->
+                                    <line x1="35" y1="85" x2="175" y2="85" stroke="#0284C7" stroke-width="2.5"/>
+                                    <line x1="175" y1="85" x2="275" y2="85" stroke="#0284C7" stroke-width="2.5"/>
+                                </g>
+
+                                <!-- Severed / Blocked Network Connection Line to Infected Machine -->
+                                <line x1="280" y1="110" x2="380" y2="110" stroke="#EF4444" stroke-width="3" stroke-dasharray="6 4"/>
+                                <g transform="translate(320, 95)">
+                                    <circle cx="15" cy="15" r="14" fill="#FEE2E2" stroke="#EF4444" stroke-width="2"/>
+                                    <line x1="7" y1="7" x2="23" y2="23" stroke="#EF4444" stroke-width="2.5"/>
+                                    <line x1="23" y1="7" x2="7" y2="23" stroke="#EF4444" stroke-width="2.5"/>
+                                </g>
+
+                                <!-- Isolated Infected Machine inside Protective Glass Box (Cube) -->
+                                <g transform="translate(60, 25)">
+                                    <!-- Protective Barrier Cube -->
+                                    <rect x="0" y="0" width="200" height="170" rx="14" fill="#FEF2F2" stroke="#EF4444" stroke-width="2.5" stroke-dasharray="8 4"/>
+                                    
+                                    <!-- Lightning / Infection Sparkles -->
+                                    <path d="M40,40 L65,80 L55,85 L85,120" stroke="#F59E0B" stroke-width="3" fill="none" opacity="0.8"/>
+                                    
+                                    <!-- Infected Computer -->
+                                    <rect x="65" y="45" width="70" height="50" rx="6" fill="#7F1D1D"/>
+                                    <rect x="70" y="50" width="60" height="35" rx="3" fill="#DC2626"/>
+                                    <text x="100" y="73" font-size="12" font-weight="900" fill="#FFFFFF" text-anchor="middle">⚠️ مصاب</text>
+                                    <rect x="90" y="95" width="20" height="15" fill="#334155"/>
+                                    
+                                    <!-- Isolation Badge -->
+                                    <rect x="25" y="125" width="150" height="26" rx="6" fill="#991B1B"/>
+                                    <text x="100" y="142" font-size="10" font-weight="900" fill="#FFFFFF" text-anchor="middle">معزول فيزيائياً وشبكياً</text>
+                                </g>
+                            </svg>
+                        </div>
+                        <p class="text-xs text-slate-600 text-center font-bold mt-2">
+                            الاحتواء: عزل الجهاز المصاب فوراً يحصر الحريق الأمني ويمنع انتقال البرمجية الخبيثة أو برمجية الفدية لباقي حواسيب وخوادم المؤسسة.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- الرسم التوضيحي 3: الشكل 2.3.1 - نموذج تعليمي مبسط للاستجابة للحوادث من ست مراحل -->
+                <div class="bg-white rounded-2xl p-6 border border-beschool-border shadow-xs space-y-5">
+                    <div class="border-b border-beschool-border pb-3 flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-black bg-beschool-navy text-white px-2.5 py-0.5 rounded-md">الشكل 2.3.1 من كتاب الوزارة ص 47</span>
+                            <h3 class="text-lg sm:text-xl font-black text-beschool-navy mt-1">المراحل الست للاستجابة للحوادث (بالترتيب وسهم التكرار)</h3>
+                        </div>
+                        <span class="text-xs font-bold text-beschool-muted">التسلسل العام وإمكانية العودة</span>
+                    </div>
+
+                    <!-- الرسم المتجهي التفاعلي للشكل 2.3.1 -->
+                    <div class="bg-slate-50 p-4 sm:p-6 rounded-2xl border border-slate-200">
+                        <div class="w-full overflow-x-auto">
+                            <svg viewBox="0 0 760 170" class="w-full h-auto min-w-[700px] select-none font-sans" dir="ltr">
+                                <!-- Step 1: التحضير -->
+                                <g transform="translate(15, 20)">
+                                    <rect x="0" y="0" width="100" height="90" rx="10" fill="#FFFFFF" stroke="#0B1B48" stroke-width="2"/>
+                                    <circle cx="50" cy="22" r="12" fill="#0B1B48"/>
+                                    <text x="50" y="26" font-size="11" font-weight="900" fill="#FFFFFF" text-anchor="middle">1</text>
+                                    <text x="50" y="52" font-size="12" font-weight="900" fill="#0B1B48" text-anchor="middle">التحضير</text>
+                                    <text x="50" y="72" font-size="9" font-weight="700" fill="#64748B" text-anchor="middle">إجراءات مسبقة</text>
+                                </g>
+                                <line x1="115" y1="65" x2="135" y2="65" stroke="#FF5500" stroke-width="3" marker-end="url(#arrow)"/>
+
+                                <!-- Step 2: الاكتشاف -->
+                                <g transform="translate(140, 20)">
+                                    <rect x="0" y="0" width="100" height="90" rx="10" fill="#FFFFFF" stroke="#0B1B48" stroke-width="2"/>
+                                    <circle cx="50" cy="22" r="12" fill="#0B1B48"/>
+                                    <text x="50" y="26" font-size="11" font-weight="900" fill="#FFFFFF" text-anchor="middle">2</text>
+                                    <text x="50" y="52" font-size="12" font-weight="900" fill="#0B1B48" text-anchor="middle">الاكتشاف</text>
+                                    <text x="50" y="72" font-size="9" font-weight="700" fill="#64748B" text-anchor="middle">تأكيد الحادث</text>
+                                </g>
+                                <line x1="240" y1="65" x2="260" y2="65" stroke="#FF5500" stroke-width="3"/>
+
+                                <!-- Step 3: الاحتواء -->
+                                <g transform="translate(265, 20)">
+                                    <rect x="0" y="0" width="100" height="90" rx="10" fill="#FFFFFF" stroke="#FF5500" stroke-width="2.5"/>
+                                    <circle cx="50" cy="22" r="12" fill="#FF5500"/>
+                                    <text x="50" y="26" font-size="11" font-weight="900" fill="#FFFFFF" text-anchor="middle">3</text>
+                                    <text x="50" y="52" font-size="12" font-weight="900" fill="#FF5500" text-anchor="middle">الاحتواء</text>
+                                    <text x="50" y="72" font-size="9" font-weight="700" fill="#64748B" text-anchor="middle">الحد من التأثير</text>
+                                </g>
+                                <line x1="365" y1="65" x2="385" y2="65" stroke="#FF5500" stroke-width="3"/>
+
+                                <!-- Step 4: الإزالة (الاستئصال) -->
+                                <g transform="translate(390, 20)">
+                                    <rect x="0" y="0" width="100" height="90" rx="10" fill="#FFFFFF" stroke="#0B1B48" stroke-width="2"/>
+                                    <circle cx="50" cy="22" r="12" fill="#0B1B48"/>
+                                    <text x="50" y="26" font-size="11" font-weight="900" fill="#FFFFFF" text-anchor="middle">4</text>
+                                    <text x="50" y="52" font-size="12" font-weight="900" fill="#0B1B48" text-anchor="middle">الإزالة</text>
+                                    <text x="50" y="72" font-size="9" font-weight="700" fill="#64748B" text-anchor="middle">إزالة التهديد</text>
+                                </g>
+                                <line x1="490" y1="65" x2="510" y2="65" stroke="#FF5500" stroke-width="3"/>
+
+                                <!-- Step 5: الاستعادة -->
+                                <g transform="translate(515, 20)">
+                                    <rect x="0" y="0" width="100" height="90" rx="10" fill="#FFFFFF" stroke="#0B1B48" stroke-width="2"/>
+                                    <circle cx="50" cy="22" r="12" fill="#0B1B48"/>
+                                    <text x="50" y="26" font-size="11" font-weight="900" fill="#FFFFFF" text-anchor="middle">5</text>
+                                    <text x="50" y="52" font-size="12" font-weight="900" fill="#0B1B48" text-anchor="middle">الاستعادة</text>
+                                    <text x="50" y="72" font-size="9" font-weight="700" fill="#64748B" text-anchor="middle">استعادة الأنظمة</text>
+                                </g>
+                                <line x1="615" y1="65" x2="635" y2="65" stroke="#FF5500" stroke-width="3"/>
+
+                                <!-- Step 6: الدروس المستفادة والتحسين (الوقاية) -->
+                                <g transform="translate(640, 20)">
+                                    <rect x="0" y="0" width="105" height="90" rx="10" fill="#FFFFFF" stroke="#0B1B48" stroke-width="2"/>
+                                    <circle cx="52" cy="22" r="12" fill="#0B1B48"/>
+                                    <text x="52" y="26" font-size="11" font-weight="900" fill="#FFFFFF" text-anchor="middle">6</text>
+                                    <text x="52" y="52" font-size="12" font-weight="900" fill="#0B1B48" text-anchor="middle">الوقاية</text>
+                                    <text x="52" y="72" font-size="9" font-weight="700" fill="#64748B" text-anchor="middle">منع تكرار الحادث</text>
+                                </g>
+
+                                <!-- Feedback / Return Curved Arrow (العودة لمرحلة سابقة) -->
+                                <path d="M565,115 C565,145 315,145 315,115" fill="none" stroke="#EF4444" stroke-width="2.5" stroke-dasharray="5 3"/>
+                                <polygon points="315,112 310,122 320,122" fill="#EF4444"/>
+                                <text x="440" y="150" font-size="10" font-weight="900" fill="#DC2626" text-anchor="middle">قد تستلزم الاستجابة الفعلية العودة إلى مرحلة سابقة (الاحتواء أو الاستئصال)</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- المحاكي التفاعلي لاستكشاف تفاصيل كل مرحلة -->
+                    <div class="p-4 rounded-xl bg-white border border-slate-200 space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                            <span class="text-xs font-black text-beschool-navy">
+                                اضغط على أي مرحلة لعرض وظيفتها ودورها العملي:
+                            </span>
+                            <span id="irStepBadge" class="text-xs font-mono font-bold text-beschool-orange">المرحلة 1 / 6</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-center text-xs">
+                            <button onclick="setIRPhase(1)" id="irBtn-1" class="p-2.5 rounded-xl border-2 border-beschool-orange bg-orange-50 font-black text-beschool-navy shadow-xs transition">1. التحضير</button>
+                            <button onclick="setIRPhase(2)" id="irBtn-2" class="p-2.5 rounded-xl border border-slate-200 bg-white font-bold text-beschool-navy hover:bg-slate-100 transition">2. الاكتشاف</button>
+                            <button onclick="setIRPhase(3)" id="irBtn-3" class="p-2.5 rounded-xl border border-slate-200 bg-white font-bold text-beschool-navy hover:bg-slate-100 transition">3. الاحتواء</button>
+                            <button onclick="setIRPhase(4)" id="irBtn-4" class="p-2.5 rounded-xl border border-slate-200 bg-white font-bold text-beschool-navy hover:bg-slate-100 transition">4. الاستئصال</button>
+                            <button onclick="setIRPhase(5)" id="irBtn-5" class="p-2.5 rounded-xl border border-slate-200 bg-white font-bold text-beschool-navy hover:bg-slate-100 transition">5. الاستعادة</button>
+                            <button onclick="setIRPhase(6)" id="irBtn-6" class="p-2.5 rounded-xl border border-slate-200 bg-white font-bold text-beschool-navy hover:bg-slate-100 transition">6. الوقاية</button>
+                        </div>
+
+                        <div id="irPhaseDetailCard" class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-3.5 transition-all text-right">
+                            <div id="irPhaseIconBox" class="w-12 h-12 rounded-xl bg-orange-100 text-beschool-orange flex items-center justify-center text-xl shrink-0 font-bold">
+                                <i class="fa-solid fa-clipboard-check"></i>
+                            </div>
+                            <div class="space-y-1 flex-1">
+                                <h4 id="irPhaseTitle" class="text-xs sm:text-sm font-black text-beschool-navy">المرحلة 1: التحضير (Preparation)</h4>
+                                <p id="irPhaseDesc" class="text-xs text-slate-600 leading-relaxed">
+                                    إنشاء إجراءات وهياكل استجابة مسبقاً استعداداً للحوادث قبل وقوعها، وتحديد أدوار الفريق وسياسات التعامل.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الرسم التوضيحي 4: المخطط النقطي لمصفوفة تقييم المخاطر بالرايات (ص 47) -->
+                <div class="bg-white rounded-2xl p-6 border border-beschool-border shadow-xs space-y-4">
+                    <div class="border-b border-beschool-border pb-3 flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-black bg-beschool-navy text-white px-2.5 py-0.5 rounded-md">رسم توضيحي من الكتاب ص 47</span>
+                            <h3 class="text-lg sm:text-xl font-black text-beschool-navy mt-1">تحديد المخاطر الأعلى أولوية (الأثر × الاحتمالية)</h3>
+                        </div>
+                        <span class="text-xs font-bold text-beschool-muted">خريطة أولويات المعالجة</span>
+                    </div>
+
+                    <!-- SVG Scatter Plot with Flags matching Page 47 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                        <div class="w-full overflow-x-auto">
+                            <svg viewBox="0 0 650 250" class="w-full h-auto min-w-[580px] select-none font-sans" dir="ltr">
+                                <!-- Axes -->
+                                <line x1="70" y1="210" x2="600" y2="210" stroke="#334155" stroke-width="2.5"/>
+                                <line x1="70" y1="210" x2="70" y2="25" stroke="#334155" stroke-width="2.5"/>
+                                <polygon points="600,210 592,205 592,215" fill="#334155"/>
+                                <polygon points="70,25 65,33 75,33" fill="#334155"/>
+
+                                <!-- Axis Labels -->
+                                <text x="330" y="235" font-size="11" font-weight="900" fill="#0B1B48" text-anchor="middle">الاحتمالية (Likelihood) ➔</text>
+                                <text x="30" y="120" font-size="11" font-weight="900" fill="#0B1B48" text-anchor="middle" transform="rotate(-90 30 120)">التأثير (Impact) ➔</text>
+
+                                <!-- Background Color Zones -->
+                                <rect x="71" y="26" width="520" height="183" fill="url(#zoneGrad)" opacity="0.15"/>
+                                <defs>
+                                    <linearGradient id="zoneGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#10B981"/>
+                                        <stop offset="60%" stop-color="#F59E0B"/>
+                                        <stop offset="100%" stop-color="#EF4444"/>
+                                    </linearGradient>
+                                </defs>
+
+                                <!-- Low Priority Risks (Bottom Left) -->
+                                <circle cx="120" cy="180" r="12" fill="#E2E8F0" stroke="#64748B" stroke-width="1.5"/>
+                                <text x="120" y="184" font-size="9" font-weight="700" fill="#334155" text-anchor="middle">منخفض</text>
+
+                                <circle cx="180" cy="150" r="12" fill="#E2E8F0" stroke="#64748B" stroke-width="1.5"/>
+                                <text x="180" y="154" font-size="9" font-weight="700" fill="#334155" text-anchor="middle">منخفض</text>
+
+                                <!-- Medium Priority Risks (Center) -->
+                                <circle cx="300" cy="130" r="14" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+                                <text x="300" y="134" font-size="9" font-weight="800" fill="#B45309" text-anchor="middle">متوسط</text>
+
+                                <circle cx="380" cy="100" r="14" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+                                <text x="380" y="104" font-size="9" font-weight="800" fill="#B45309" text-anchor="middle">متوسط</text>
+
+                                <!-- High Priority Risks with Flags (Top Right - Red Zone) -->
+                                <g transform="translate(480, 40)">
+                                    <!-- Flag 1 -->
+                                    <line x1="20" y1="10" x2="20" y2="45" stroke="#991B1B" stroke-width="2"/>
+                                    <polygon points="20,10 50,18 20,26" fill="#EF4444"/>
+                                    <circle cx="20" cy="45" r="16" fill="#FEE2E2" stroke="#DC2626" stroke-width="2.5"/>
+                                    <text x="20" y="49" font-size="9" font-weight="900" fill="#991B1B" text-anchor="middle">أولوية 1</text>
+                                </g>
+
+                                <g transform="translate(540, 70)">
+                                    <!-- Flag 2 -->
+                                    <line x1="20" y1="10" x2="20" y2="45" stroke="#991B1B" stroke-width="2"/>
+                                    <polygon points="20,10 50,18 20,26" fill="#F97316"/>
+                                    <circle cx="20" cy="45" r="16" fill="#FFEDD5" stroke="#EA580C" stroke-width="2.5"/>
+                                    <text x="20" y="49" font-size="9" font-weight="900" fill="#9A3412" text-anchor="middle">أولوية 2</text>
+                                </g>
+
+                                <text x="490" y="135" font-size="10" font-weight="900" fill="#DC2626">منطقة الأولوية القصوى (تأثير عالٍ + احتمال عالٍ)</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الرسم التوضيحي 5: الشكل 2.3.2 - مصفوفة تقييم المخاطر 3×3 (ص 48) -->
+                <div class="bg-white rounded-2xl p-6 border border-beschool-border shadow-xs space-y-5">
+                    <div class="border-b border-beschool-border pb-3 flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-black bg-beschool-navy text-white px-2.5 py-0.5 rounded-md">الشكل 2.3.2 من كتاب الوزارة ص 48</span>
+                            <h3 class="text-lg sm:text-xl font-black text-beschool-navy mt-1">مصفوفة تقييم المخاطر (المخاطرة = التأثير × الاحتمالية)</h3>
+                        </div>
+                        <span class="text-xs font-bold text-beschool-muted">معادلة حساب أولوية المعالجة</span>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm space-y-1.5 text-right">
+                        <strong class="font-black text-beschool-navy block">معادلة درجة الخطر المعتمدة:</strong>
+                        <p class="text-slate-700 font-bold">درجة الخطر = درجة التأثير (حجم الضرر) × درجة الاحتمالية (مدى فرصة الوقوع)</p>
+                        <p class="text-slate-600 text-xs">
+                            القاعدة الأساسية: <strong>يجب معالجة المخاطر ذات التأثير المرتفع والاحتمالية المرتفعة أولاً</strong>؛ لأن موارد ووقت المؤسسة لا يكفيان لمعالجة كل المخاطر في نفس الوقت.
+                        </p>
+                    </div>
+
+                    <!-- رسم وتكوين مصفوفة 3×3 التفاعلية المطابقة تماماً لكتاب الوزارة ص 48 -->
+                    <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+                        <div class="text-center font-bold text-xs text-beschool-navy">
+                            مصفوفة تقييم المخاطر 3×3 (انقر على أي خلية لحساب الأولوية):
+                        </div>
+
+                        <!-- 3x3 Matrix Grid Layout -->
+                        <div class="max-w-md mx-auto bg-white p-3 rounded-2xl border border-slate-300 shadow-xs">
+                            <div class="grid grid-cols-4 gap-1.5 text-center text-xs font-black">
+                                <!-- Top Row: Header -->
+                                <div class="p-2 text-[11px] text-slate-400">التأثير \ الاحتمال</div>
+                                <div class="p-2 bg-slate-100 text-slate-700 rounded-lg">منخفض</div>
+                                <div class="p-2 bg-slate-100 text-slate-700 rounded-lg">متوسط</div>
+                                <div class="p-2 bg-slate-100 text-slate-700 rounded-lg">مرتفع</div>
+
+                                <!-- Row 1: مرتفع -->
+                                <div class="p-2.5 bg-slate-100 text-slate-700 rounded-lg flex items-center justify-center">مرتفع</div>
+                                <div onclick="selectMatrixCell('متوسط', 'تأثير مرتفع مع احتمالية منخفضة', 'amber')" class="p-3 bg-amber-100 text-amber-900 rounded-xl cursor-pointer hover:ring-2 hover:ring-amber-400 transition">متوسط</div>
+                                <div onclick="selectMatrixCell('مرتفع', 'تأثير مرتفع مع احتمالية متوسطة', 'orange')" class="p-3 bg-orange-200 text-orange-950 rounded-xl cursor-pointer hover:ring-2 hover:ring-orange-400 transition">مرتفع</div>
+                                <div onclick="selectMatrixCell('مرتفع جداً', 'أعلى أولوية: يجب معالجة هذه المخاطر أولاً وفوراً!', 'red')" class="p-3 bg-rose-600 text-white rounded-xl cursor-pointer hover:ring-2 hover:ring-rose-800 transition font-black">مرتفع جداً ⚠️</div>
+
+                                <!-- Row 2: متوسط -->
+                                <div class="p-2.5 bg-slate-100 text-slate-700 rounded-lg flex items-center justify-center">متوسط</div>
+                                <div onclick="selectMatrixCell('منخفض', 'تأثير متوسط مع احتمالية منخفضة', 'emerald')" class="p-3 bg-emerald-100 text-emerald-900 rounded-xl cursor-pointer hover:ring-2 hover:ring-emerald-400 transition">منخفض</div>
+                                <div onclick="selectMatrixCell('متوسط', 'تأثير متوسط مع احتمالية متوسطة', 'amber')" class="p-3 bg-amber-100 text-amber-900 rounded-xl cursor-pointer hover:ring-2 hover:ring-amber-400 transition">متوسط</div>
+                                <div onclick="selectMatrixCell('مرتفع', 'تأثير متوسط مع احتمالية مرتفعة', 'orange')" class="p-3 bg-orange-200 text-orange-950 rounded-xl cursor-pointer hover:ring-2 hover:ring-orange-400 transition">مرتفع</div>
+
+                                <!-- Row 3: منخفض -->
+                                <div class="p-2.5 bg-slate-100 text-slate-700 rounded-lg flex items-center justify-center">منخفض</div>
+                                <div onclick="selectMatrixCell('منخفض جداً', 'أدنى أولوية: تأثير ضعيف واحتمال ضعيف جداً', 'gray')" class="p-3 bg-slate-100 text-slate-700 rounded-xl cursor-pointer hover:ring-2 hover:ring-slate-300 transition">منخفض جداً</div>
+                                <div onclick="selectMatrixCell('منخفض', 'تأثير منخفض مع احتمالية متوسطة', 'emerald')" class="p-3 bg-emerald-100 text-emerald-900 rounded-xl cursor-pointer hover:ring-2 hover:ring-emerald-400 transition">منخفض</div>
+                                <div onclick="selectMatrixCell('متوسط', 'تأثير منخفض مع احتمالية مرتفعة', 'amber')" class="p-3 bg-amber-100 text-amber-900 rounded-xl cursor-pointer hover:ring-2 hover:ring-amber-400 transition">متوسط</div>
+                            </div>
+                        </div>
+
+                        <!-- Selected Matrix Cell Detail Box -->
+                        <div id="matrixDetailCard" class="p-4 rounded-xl border-2 border-rose-400 bg-rose-50 text-right space-y-1 transition-all">
+                            <span class="text-[11px] font-mono font-bold text-rose-700 block" id="matrixCellBadge">الخلية المحددة: تأثير مرتفع × احتمال مرتفع</span>
+                            <h5 class="text-xs sm:text-sm font-black text-rose-950" id="matrixCellTitle">درجة الخطر: مرتفع جداً (الأولوية القصوى)</h5>
+                            <p class="text-xs text-rose-900 leading-relaxed" id="matrixCellDesc">
+                                القاعدة المنهجية: يجب معالجة هذه المخاطر أولاً وفوراً؛ مثل هجمات الفدية التي تشفر قواعد البيانات الحساسة أو تعطل الخدمات الحيوية.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================================================= -->
+            <!-- 2. تبويب المراجعة (REVISION TAB) -->
+            <!-- ========================================================================= -->
+            <div id="pane-revision" class="hidden space-y-6">
+                <!-- بطاقات المفاهيم 3D -->
+                <div class="bg-white rounded-2xl p-6 border border-beschool-border shadow-xs space-y-5">
+                    <div class="border-b border-beschool-border pb-3 flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-black bg-beschool-navy text-white px-2.5 py-0.5 rounded-md">أداة الاستذكار السريع</span>
+                            <h3 class="text-lg sm:text-xl font-black text-beschool-navy mt-1">بطاقات مفاهيم الدرس 2-3 (انقر لقلب البطاقة)</h3>
+                        </div>
+                        <span class="text-xs font-bold text-beschool-muted">6 بطاقات امتحانية معتمدة</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Card 1 -->
+                        <div class="flashcard perspective-1000 h-44 cursor-pointer" onclick="this.classList.toggle('flipped')">
+                            <div class="flashcard-inner relative w-full h-full transform-style-3d">
+                                <div class="backface-hidden absolute inset-0 bg-slate-50 rounded-2xl p-5 border border-beschool-border flex flex-col items-center justify-center text-center shadow-xs">
+                                    <span class="text-[10px] font-black bg-orange-100 text-beschool-orange px-2 py-0.5 rounded-full mb-2">المصطلح 1</span>
+                                    <h4 class="font-extrabold text-base text-beschool-navy">الحادث الأمني<br><span class="text-xs font-mono text-beschool-muted">Security Incident</span></h4>
+                                    <span class="text-[11px] text-beschool-muted mt-3"><i class="fa-solid fa-arrows-rotate ml-1"></i> انقر لرؤية التعريف</span>
+                                </div>
+                                <div class="backface-hidden rotate-y-180 absolute inset-0 bg-beschool-navy text-white rounded-2xl p-5 flex flex-col items-center justify-center text-center">
+                                    <p class="text-xs leading-relaxed text-slate-200">
+                                        حدث يؤثر في سرية المعلومات أو سلامتها أو توافرها، أو يهددها بجدية، أو يخالف سياسة أمنية.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="flashcard perspective-1000 h-44 cursor-pointer" onclick="this.classList.toggle('flipped')">
+                            <div class="flashcard-inner relative w-full h-full transform-style-3d">
+                                <div class="backface-hidden absolute inset-0 bg-slate-50 rounded-2xl p-5 border border-beschool-border flex flex-col items-center justify-center text-center shadow-xs">
+                                    <span class="text-[10px] font-black bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full mb-2">المصطلح 2</span>
+                                    <h4 class="font-extrabold text-base text-beschool-navy">الاحتواء<br><span class="text-xs font-mono text-beschool-muted">Containment</span></h4>
+                                    <span class="text-[11px] text-beschool-muted mt-3"><i class="fa-solid fa-arrows-rotate ml-1"></i> انقر لرؤية التعريف</span>
+                                </div>
+                                <div class="backface-hidden rotate-y-180 absolute inset-0 bg-rose-900 text-white rounded-2xl p-5 flex flex-col items-center justify-center text-center">
+                                    <p class="text-xs leading-relaxed text-slate-200">
+                                        تحديد نطاق التأثير وعزل الجزء المتأثر بالحادث لمنع انتشار الضرر لباقي الأنظمة.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="flashcard perspective-1000 h-44 cursor-pointer" onclick="this.classList.toggle('flipped')">
+                            <div class="flashcard-inner relative w-full h-full transform-style-3d">
+                                <div class="backface-hidden absolute inset-0 bg-slate-50 rounded-2xl p-5 border border-beschool-border flex flex-col items-center justify-center text-center shadow-xs">
+                                    <span class="text-[10px] font-black bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full mb-2">المصطلح 3</span>
+                                    <h4 class="font-extrabold text-base text-beschool-navy">إزالة التهديد (الاستئصال)<br><span class="text-xs font-mono text-beschool-muted">Eradication</span></h4>
+                                    <span class="text-[11px] text-beschool-muted mt-3"><i class="fa-solid fa-arrows-rotate ml-1"></i> انقر لرؤية التعريف</span>
+                                </div>
+                                <div class="backface-hidden rotate-y-180 absolute inset-0 bg-purple-900 text-white rounded-2xl p-5 flex flex-col items-center justify-center text-center">
+                                    <p class="text-xs leading-relaxed text-slate-200">
+                                        إزالة التهديد ومسبباته بالكامل؛ مثل حذف البرمجيات الخبيثة وسد الثغرة الأمنية المستغلة.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="flashcard perspective-1000 h-44 cursor-pointer" onclick="this.classList.toggle('flipped')">
+                            <div class="flashcard-inner relative w-full h-full transform-style-3d">
+                                <div class="backface-hidden absolute inset-0 bg-slate-50 rounded-2xl p-5 border border-beschool-border flex flex-col items-center justify-center text-center shadow-xs">
+                                    <span class="text-[10px] font-black bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full mb-2">المصطلح 4</span>
+                                    <h4 class="font-extrabold text-base text-beschool-navy">الاستعادة<br><span class="text-xs font-mono text-beschool-muted">Recovery</span></h4>
+                                    <span class="text-[11px] text-beschool-muted mt-3"><i class="fa-solid fa-arrows-rotate ml-1"></i> انقر لرؤية التعريف</span>
+                                </div>
+                                <div class="backface-hidden rotate-y-180 absolute inset-0 bg-emerald-900 text-white rounded-2xl p-5 flex flex-col items-center justify-center text-center">
+                                    <p class="text-xs leading-relaxed text-slate-200">
+                                        إعادة الأنظمة والخدمات إلى حالة تشغيل آمنة وطبيعية (قد تشمل الاستعادة من نسخة احتياطية سليمة).
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 5 -->
+                        <div class="flashcard perspective-1000 h-44 cursor-pointer" onclick="this.classList.toggle('flipped')">
+                            <div class="flashcard-inner relative w-full h-full transform-style-3d">
+                                <div class="backface-hidden absolute inset-0 bg-slate-50 rounded-2xl p-5 border border-beschool-border flex flex-col items-center justify-center text-center shadow-xs">
+                                    <span class="text-[10px] font-black bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full mb-2">المصطلح 5</span>
+                                    <h4 class="font-extrabold text-base text-beschool-navy">الدروس المستفادة والتحسين<br><span class="text-xs font-mono text-beschool-muted">Lessons Learned</span></h4>
+                                    <span class="text-[11px] text-beschool-muted mt-3"><i class="fa-solid fa-arrows-rotate ml-1"></i> انقر لرؤية التعريف</span>
+                                </div>
+                                <div class="backface-hidden rotate-y-180 absolute inset-0 bg-amber-900 text-white rounded-2xl p-5 flex flex-col items-center justify-center text-center">
+                                    <p class="text-xs leading-relaxed text-slate-200">
+                                        تحليل ما حدث، وتوثيق الدروس، وتحسين الضوابط الأمنية لتقليل احتمال تكرار الحادث وأثره.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 6 -->
+                        <div class="flashcard perspective-1000 h-44 cursor-pointer" onclick="this.classList.toggle('flipped')">
+                            <div class="flashcard-inner relative w-full h-full transform-style-3d">
+                                <div class="backface-hidden absolute inset-0 bg-slate-50 rounded-2xl p-5 border border-beschool-border flex flex-col items-center justify-center text-center shadow-xs">
+                                    <span class="text-[10px] font-black bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full mb-2">المصطلح 6</span>
+                                    <h4 class="font-extrabold text-base text-beschool-navy">تقييم المخاطر<br><span class="text-xs font-mono text-beschool-muted">Risk Assessment</span></h4>
+                                    <span class="text-[11px] text-beschool-muted mt-3"><i class="fa-solid fa-arrows-rotate ml-1"></i> انقر لرؤية التعريف</span>
+                                </div>
+                                <div class="backface-hidden rotate-y-180 absolute inset-0 bg-blue-900 text-white rounded-2xl p-5 flex flex-col items-center justify-center text-center">
+                                    <p class="text-xs leading-relaxed text-slate-200">
+                                        تقدير درجة الخطر بضرب التأثير في الاحتمالية لتحديد أولويات المعالجة والبدء بالأعلى خطورة أولاً.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- خلاصة ليلة الامتحان -->
+                <div class="bg-white rounded-2xl p-6 sm:p-8 border border-beschool-border shadow-xs space-y-6">
+                    <div class="border-b border-beschool-border pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <span class="text-[11px] font-black bg-orange-100 text-beschool-orange px-2.5 py-0.5 rounded-md">خلاصة ليلة الامتحان</span>
+                            <h3 class="text-lg sm:text-xl font-black text-beschool-navy mt-1">تذكر دائماً (أهم مفاتيح الدرس 2-3)</h3>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="readSummaryAloudL23()" id="ttsBtn23" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-orange-50 hover:text-beschool-orange text-beschool-navy text-xs font-bold transition flex items-center gap-1.5">
+                                <i id="ttsIcon23" class="fa-solid fa-volume-high"></i>
+                                <span id="ttsLabel23">استمع صوتياً للملخص (مصري سريع)</span>
+                            </button>
+                            <button onclick="copySummaryTextL23()" class="px-3.5 py-2 rounded-xl bg-beschool-navy hover:bg-beschool-navyLight text-white text-xs font-bold transition flex items-center gap-1.5">
+                                <i class="fa-regular fa-copy"></i>
+                                <span id="copyBtnLabel23">نسخ الملخص</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-beschool-border space-y-2">
+                            <div class="flex items-center gap-2 text-beschool-orange font-black">
+                                <i class="fa-solid fa-list-ol"></i>
+                                <span>1. تسلسل مراحل الاستجابة الست:</span>
+                            </div>
+                            <p class="text-beschool-slate leading-relaxed">
+                                التحضير ➔ الاكتشاف ➔ الاحتواء (عزل المصاب) ➔ إزالة التهديد (الاستئصال) ➔ الاستعادة (تشغيل الأنظمة) ➔ الدروس المستفادة والتحسين. الترتيب عام وقد تتداخل الأنشطة أو نعود لمرحلة سابقة إذا كشفت الاستعادة عن بقايا للتهديد.
+                            </p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-beschool-border space-y-2">
+                            <div class="flex items-center gap-2 text-beschool-orange font-black">
+                                <i class="fa-solid fa-calculator"></i>
+                                <span>2. معادلة تقييم المخاطر وتحديد الأولويات:</span>
+                            </div>
+                            <p class="text-beschool-slate leading-relaxed">
+                                درجة الخطر = درجة التأثير (حجم الضرر) × درجة الاحتمالية (فرصة الوقوع). تعالج المخاطر ذات التأثير المرتفع والاحتمالية المرتفعة أولاً كأعلى أولوية.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================================================= -->
+            <!-- 3. تبويب حل تمارين الكتاب (BOOK SOLUTIONS TAB) -->
+            <!-- ========================================================================= -->
+            <div id="pane-book-solutions" class="space-y-6 hidden">
+                <div class="bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl p-6 sm:p-7 shadow-xs space-y-2 text-right">
+                    <div class="inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-lg text-xs font-black">
+                        <i class="fa-solid fa-award"></i>
+                        <span>حلول نموذجية وشاملة لكافة تدريبات الدرس 2-3</span>
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-black">حل جميع تدريبات وأسئلة كتاب الوزارة المعتمدة</h2>
+                    <p class="text-xs sm:text-sm text-orange-50 font-medium leading-relaxed">
+                        إجابات مفسرة ومدعومة بالتعليلات العلمية: توقف وفكر، المثال المحلول، سؤال نمط الامتحان (6 درجات)، تدرب 1 و 2، ورشة فكر كمهندس، طبق ما تعلمته، والتمارين الختامية.
+                    </p>
+                </div>
+
+                <!-- توقف وفكر ص 47 -->
+                <div class="bg-white rounded-2xl p-6 border border-beschool-border shadow-xs space-y-4">
+                    <span class="text-xs font-black bg-blue-100 text-blue-800 px-3 py-1 rounded-lg">حل سؤال «توقف وفكر» (ص 47)</span>
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm space-y-2 text-slate-700">
+                        <p class="font-bold text-beschool-navy">السؤال: لماذا يجب أن يأتي الاحتواء قبل الاستئصال في الاستجابة ذات المراحل الست؟</p>
+                        <p class="text-emerald-900 bg-emerald-50 p-2.5 rounded-lg border border-emerald-200 font-bold">
+                            الإجابة: لأن الاحتواء يعزل الأنظمة والأجهزة المتضررة ويمنع انتشار الضرر وانتقال الهجوم إلى خوادم وأجهزة أخرى داخل الشبكة؛ فلو بدأ الاستئصال قبل عزل الأنظمة فقد يستشعر المهاجم المحاولة وينتقل لأجهزة أخرى أو يتلف سجلات الأدلة.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- المثال المحلول ص 48 -->
+                <div class="bg-white rounded-2xl p-6 border border-beschool-border shadow-xs space-y-4">
+                    <span class="text-xs font-black bg-purple-100 text-purple-800 px-3 py-1 rounded-lg">حل «المثال المحلول» (ص 48)</span>
+                    <div class="space-y-3 text-xs sm:text-sm">
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                            <strong class="text-beschool-navy block font-black">1. ضع علامة (✓) أو (✗) مع التفسير:</strong>
+                            <p>أ) الحادث الأمني حدث يؤثر في سرية المعلومات أو سلامتها أو توافرها، أو يهددها بجدية، أو يخالف سياسة أمنية: <strong class="text-emerald-700">(✓) صواب</strong>.</p>
+                            <p>ب) في الاستجابة للحوادث، من المهم أولاً منع انتشار الضرر قبل إزالة السبب: <strong class="text-emerald-700">(✓) صواب</strong> (الاحتواء يسبق الاستئصال).</p>
+                            <p>ج) يمكن تحديد حجم المخاطرة بالتأثير وحده: <strong class="text-rose-700">(✗) خطأ</strong> (التصحيح: يتحدد حجم المخاطرة بالتأثير مضروباً في الاحتمالية معاً).</p>
+                            <p>د) المرحلة الأخيرة من الاستجابة للحوادث هي الدروس المستفادة والتحسين: <strong class="text-emerald-700">(✓) صواب</strong>.</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                            <strong class="text-beschool-navy block font-black">2. المطابقة:</strong>
+                            <p>• إنشاء إجراءات استجابة مسبقاً: <strong>التحضير (أ)</strong>.</p>
+                            <p>• فصل حاسوب مصاب بالبرمجيات الخبيثة عن الشبكة: <strong>الاحتواء (ب)</strong>.</p>
+                            <p>• إزالة إصابة البرمجيات الخبيثة: <strong>الاستئصال (جـ)</strong>.</p>
+                            <p>• تحليل السبب واتخاذ التدابير لضمان عدم التكرار: <strong>الدروس المستفادة والتحسين (د)</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- سؤال نمط الامتحان المقالي 6 درجات ص 49 -->
+                <div class="bg-white rounded-2xl p-6 border-2 border-beschool-orange shadow-xs space-y-4">
+                    <div class="flex items-center justify-between border-b border-beschool-border pb-2">
+                        <span class="text-xs font-black bg-beschool-orange text-white px-3 py-1 rounded-lg">سؤال نمط الامتحان المقالي [6 درجات] (ص 49)</span>
+                        <span class="text-xs font-bold text-beschool-navy">سلم توزيع الدرجات المعتمد</span>
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-orange-50/70 border border-orange-200 font-bold text-beschool-navy text-xs sm:text-sm">
+                        نص السؤال: «اشرح أهمية التسلسل العام لمراحل الاستجابة للحوادث، مستخدماً الاحتواء والاستئصال والاستعادة كمثال، ووضح لماذا قد تحتاج الاستجابة الفعلية إلى العودة إلى مرحلة سابقة؟ [6 درجات]»
+                    </div>
+                    <div class="space-y-2 text-xs sm:text-sm">
+                        <div class="p-2.5 rounded-lg bg-white border border-slate-200">
+                            <strong>1. أهمية أسبقية الاحتواء على الاستئصال [درجتان]:</strong> تنفيذ الاحتواء أولاً يضمن عزل الأجهزة المتضررة وحصر الضرر لمنع انتشار البرمجيات الخبيثة لباقي الشبكة، ثم يأتي الاستئصال لإزالة التهديد بأمان.
+                        </div>
+                        <div class="p-2.5 rounded-lg bg-white border border-slate-200">
+                            <strong>2. خطورة بدء الاستعادة قبل الاستئصال [درجتان]:</strong> إذا بدأت مرحلة الاستعادة واسترجاع البيانات قبل إزالة التهديد ومسبباته، فقد تعاود البرمجية الخبيثة أو الثغرة المفتوحة نشاطها فوراً وتصيب وتشفر البيانات المستعادة مجدداً.
+                        </div>
+                        <div class="p-2.5 rounded-lg bg-white border border-slate-200">
+                            <strong>3. أسباب العودة إلى مراحل سابقة في الواقع العملي [درجتان]:</strong> لأن الاستجابة الفعلية قد تكشف أثناء مرحلة الاستعادة عن بقايا للتهديد أو قنوات اتصال خفية لم ترصد من قبل، مما يستلزم التراجع فوراً إلى مرحلتي الاحتواء أو الاستئصال للقضاء عليها.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- تدرب 1 و 2 ص 49 -->
+                <div class="bg-white rounded-2xl p-6 border border-beschool-border shadow-xs space-y-4">
+                    <span class="text-xs font-black bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg">حل أسئلة «تدرب 1 و 2» (ص 49)</span>
+                    <div class="space-y-3 text-xs sm:text-sm">
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                            <p>1. المصطلح الذي يُطلق على حدث يؤثر في سرية المعلومات أو سلامتها أو توافرها: <strong>الحادث الأمني</strong>.</p>
+                            <p>2. المراحل الست للاستجابة للحوادث بحسب تسلسلها العام: <strong>التحضير ➔ الاكتشاف ➔ الاحتواء ➔ إزالة التهديد (الاستئصال) ➔ الاستعادة ➔ الدروس المستفادة والتحسين</strong>.</p>
+                            <p>3. العاملان المستخدمان لتحديد حجم ودرجة المخاطرة: <strong>درجة التأثير × درجة الاحتمالية</strong>.</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                            <p>• الخيار الذي لا يمثل مثالاً لحادث أمني: <strong>(جـ) تم إجراء تحديث للبرنامج لإضافة ميزات جديدة</strong> (لأنه إجراء صيانة وتطوير عادي).</p>
+                            <p>• الخيار الأدق لمفهوم تقييم المخاطر: <strong>(جـ) ينبغي معالجة المخاطر ذات التأثير العالي والاحتمالية العالية أولاً</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ورشة فكر كمهندس وطبق ما تعلمته ص 49 و 50 -->
+                <div class="bg-white rounded-2xl p-6 border border-beschool-border shadow-xs space-y-4">
+                    <span class="text-xs font-black bg-amber-100 text-amber-900 px-3 py-1 rounded-lg">حل ورشة «فكر كمهندس» وسؤال «طبق ما تعلمته» (ص 49 و 50)</span>
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm space-y-2 text-slate-700">
+                        <p class="font-bold text-beschool-navy">قرار فكر كمهندس (هجوم فدية شفر ملفات الطلاب بمدرسة):</p>
+                        <p><strong>الإجراء المعتمد:</strong> اتباع الاستجابة ذات المراحل الست بالترتيب؛ نبدأ بالاحتواء بعزل الخوادم وحواسب المدرسة المصابة عن الشبكة لمنع انتشار الفدية، ثم التحقق من استئصال البرمجية وسد الثغرة، ثم استعادة الملفات من النسخ الاحتياطية السليمة، وأخيراً استخلاص الدروس المستفادة وتحديث الحماية. <strong>المخاطرة الأعلى أولوية:</strong> هجوم فدية آخر؛ لأن تأثيره كبير واحتماليته مرتفعة، بينما انقطاع الكهرباء القصير تأثيره صغير واحتماليته منخفضة.</p>
+                        <p class="font-bold text-beschool-navy pt-1">حل سؤال طبق ما تعلمته (متجر إلكتروني اكتشف تسرب بيانات العملاء):</p>
+                        <p><strong>المرحلتان التاليتان:</strong> (1) الاحتواء: إغلاق مسار التسريب وعزل الجزء المتضرر فوراً، (2) الاستئصال: إزالة سبب التسريب وإصلاح الثغرة. <strong>الخطر الذي يُعطى الأولوية لاحقاً:</strong> استغلال البيانات المسربة في عمليات تصيد احتيالي واحتيال ضد عملاء المتجر.</p>
+                    </div>
+                </div>
+
+                <!-- تمارين ص 50 وفكر وتحد نفسك -->
+                <div class="bg-white rounded-2xl p-6 border border-beschool-border shadow-xs space-y-4">
+                    <span class="text-xs font-black bg-beschool-navy text-white px-3 py-1 rounded-lg">حل التمارين الختامية (ص 50)</span>
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm space-y-2 text-slate-700">
+                        <p><strong>إكمال الفراغات:</strong> يُسمى الحدث (أ: الحادث الأمني)، ويُستخدم (ب: الاحتواء) للحد من انتشار الضرر، وتُنفذ (جـ: إزالة التهديد / الاستئصال)، وتليها (د: الاستعادة) لإعادة الأنظمة، ثم تأتي (هـ: الدروس المستفادة والتحسين) لتحليل ما حدث.</p>
+                        <p><strong>ترتيب أولويات المخاطر:</strong> المخاطرة <strong>(أ: التأثير كبير والاحتمالية عالية)</strong> هي الأعلى أولوية دائماً في المعالجة.</p>
+                        <p><strong>التسلسل الأدق للاستجابة:</strong> <strong>(ب) التحضير ➔ الاكتشاف ➔ الاحتواء ➔ الاستئصال ➔ الاستعادة ➔ الدروس المستفادة والتحسين</strong>.</p>
+                        <p><strong>فكر وتحدَّ نفسك:</strong> المرحلة الأصعب تحت الضغط هي <strong>مرحلة الاحتواء (Containment)</strong>؛ لأنها تتطلب قرارات سريعة وحاسمة لحصار الضرر ومنع اتساعه في أسرع وقت ممكن.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================================================= -->
+            <!-- 4. تبويب الاختبار (QUIZ TAB) - 50 سؤالاً تفاعلياً ومحكماً -->
+            <!-- ========================================================================= -->
+            <div id="pane-questions" class="space-y-6 hidden">
+                <div class="max-w-3xl mx-auto bg-white rounded-2xl p-6 sm:p-8 border border-beschool-border shadow-xs space-y-6">
+                    <div class="border-b border-beschool-border pb-4 flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-black bg-orange-100 text-beschool-orange px-2.5 py-0.5 rounded-md">اختبار تفاعلي مصحح ذاتياً</span>
+                            <h3 class="text-lg sm:text-xl font-black text-beschool-navy mt-1">بنك أسئلة الدرس 2-3 (50 سؤالاً تحليلياً ودقيقاً)</h3>
+                        </div>
+                        <div class="text-left font-mono">
+                            <span class="text-xs text-beschool-muted block font-bold">السؤال</span>
+                            <span class="text-base font-black text-beschool-orange">
+                                <span id="activeQIndex">1</span> / <span id="totalQCount">50</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- شريط الانتقال السريع 50 زراً -->
+                    <div class="bg-slate-50 p-3 rounded-xl border border-beschool-border">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] font-black text-beschool-slate">
+                                <i class="fa-solid fa-list-check ml-1 text-beschool-orange"></i> الانتقال السريع للأسئلة:
+                            </span>
+                            <span class="text-[10px] text-beschool-muted font-bold" id="quizAnsweredBadge">تمت الإجابة: 0 / 50</span>
+                        </div>
+                        <div id="quickNavGrid" class="grid grid-cols-10 gap-1.5 text-center">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- صندوق عرض السؤال النشط -->
+                    <div id="quizContainer" class="space-y-4">
+                        <!-- Injected by JS -->
+                    </div>
+
+                    <!-- أزرار التنقل -->
+                    <div class="pt-4 border-t border-beschool-border flex items-center justify-between gap-2">
+                        <button id="btnPrevQ" onclick="prevQuestion()" class="px-4 py-2 rounded-xl text-xs font-bold text-beschool-slate hover:bg-slate-100 transition hidden">
+                            <i class="fa-solid fa-arrow-right ml-1"></i> السابق
+                        </button>
+                        <div class="flex-1"></div>
+                        <button id="btnNextQ" onclick="nextQuestion()" class="px-6 py-2.5 rounded-xl bg-beschool-orange hover:bg-beschool-orangeDark text-white text-xs sm:text-sm font-black transition flex items-center gap-1.5 shadow-xs">
+                            <span>السؤال التالي</span>
+                            <i class="fa-solid fa-arrow-left mr-1"></i>
+                        </button>
+                    </div>
+
+                    <!-- شاشة النتيجة المتوازنة والموجهة لطلاب عمر 16 سنة -->
+                    <div id="quizScoreboard" class="hidden text-center py-6 space-y-5 bg-slate-50 rounded-2xl border border-beschool-border p-6">
+                        <div id="scoreIconContainer" class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl mx-auto shadow-sm">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        
+                        <h4 class="text-xl sm:text-2xl font-black text-beschool-navy">اكتمل التقييم بنجاح!</h4>
+                        <p class="text-sm font-black text-beschool-orange">
+                            الطالب: <span id="quizStudentNameDisplay">طالب متميز</span>
+                        </p>
+                        <p id="quizScoreText" class="text-sm font-bold text-beschool-slate">
+                            درجتك المستحقة: 50 من 50
+                        </p>
+
+                        <!-- بطاقة الرسالة التحفيزية الموجهة والمناسبة لعمر الطلاب -->
+                        <div id="motivationCard" class="max-w-xl mx-auto p-4 sm:p-5 rounded-2xl border text-right space-y-2 shadow-xs transition">
+                            <!-- Dynamic Content by JS -->
+                        </div>
+
+                        <div class="max-w-xl mx-auto bg-white p-3 rounded-xl border border-beschool-border text-xs text-beschool-slate space-y-1">
+                            <p id="quizStatsDetails">صحيحة: 50 | غير صحيحة: 0</p>
+                        </div>
+
+                        <div class="flex flex-wrap justify-center gap-3 pt-2">
+                            <button onclick="resetQuizEngine()" class="px-5 py-2.5 rounded-xl bg-beschool-orange hover:bg-beschool-orangeDark text-white text-xs sm:text-sm font-bold transition flex items-center gap-2 shadow-xs">
+                                <i class="fa-solid fa-rotate-right"></i>
+                                <span>إعادة الاختبار بالكامل</span>
+                            </button>
+                            <button onclick="switchNavTab('study')" class="px-5 py-2.5 rounded-xl bg-white border border-beschool-border text-beschool-navy text-xs sm:text-sm font-bold hover:bg-slate-100 transition flex items-center gap-2">
+                                <i class="fa-solid fa-book-open"></i>
+                                <span>مراجعة الشرح</span>
+                            </button>
+                        </div>
+
+                        <!-- قائمة المراجعة التفصيلية لجميع الـ 50 سؤالاً -->
+                        <div class="pt-6 border-t border-beschool-border text-right space-y-4">
+                            <h5 class="text-sm sm:text-base font-black text-beschool-navy flex items-center gap-2">
+                                <i class="fa-solid fa-clipboard-check text-beschool-orange"></i>
+                                <span>مراجعة تفصيلية لجميع الأسئلة الـ 50:</span>
+                            </h5>
+                            <div id="quizReviewList" class="space-y-3">
+                                <!-- Injected by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="bg-white border-t border-beschool-border py-8 mt-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-5 text-center md:text-right">
+                <div class="flex flex-col items-center md:items-start leading-tight select-none">
+                    <div dir="ltr" class="flex items-baseline font-black text-2xl sm:text-3xl tracking-tight leading-none">
+                        <span class="text-beschool-orange font-black">be</span><span class="text-beschool-orange font-black">;</span><span class="text-beschool-navy font-black">school</span>
+                    </div>
+                    <span class="text-xs sm:text-sm font-black text-beschool-navy mt-1">مدرسة البرمجة</span>
+                    <span class="text-[11px] text-beschool-muted mt-1">الدرس 2-3: الاستجابة للحوادث وإدارة المخاطر • الصف الثاني الثانوي</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        let currentStudentName = "";
+
+        function goToNameEntryScreen() {
+            document.getElementById('screen-landing').classList.add('hidden');
+            const nameScreen = document.getElementById('screen-name-entry');
+            nameScreen.classList.remove('hidden');
+            const input = document.getElementById('studentNameInput');
+            if (input) input.focus();
+        }
+
+        function goToLandingScreen() {
+            document.getElementById('screen-name-entry').classList.add('hidden');
+            document.getElementById('screen-landing').classList.remove('hidden');
+        }
+
+        function startPlatformWithStudentName() {
+            const input = document.getElementById('studentNameInput');
+            const errAlert = document.getElementById('nameErrorAlert');
+            const val = input ? input.value.trim() : "";
+
+            if (!val) {
+                if (errAlert) errAlert.classList.remove('hidden');
+                if (input) input.focus();
+                return;
+            }
+
+            if (errAlert) errAlert.classList.add('hidden');
+            currentStudentName = val;
+
+            const headerNameElem = document.getElementById('headerStudentName');
+            if (headerNameElem) headerNameElem.innerText = currentStudentName;
+
+            const scoreNameElem = document.getElementById('quizStudentNameDisplay');
+            if (scoreNameElem) scoreNameElem.innerText = currentStudentName;
+
+            document.getElementById('screen-name-entry').classList.add('hidden');
+            document.getElementById('screen-main-platform').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function exitToLanding() {
+            document.getElementById('screen-main-platform').classList.add('hidden');
+            document.getElementById('screen-name-entry').classList.add('hidden');
+            document.getElementById('screen-landing').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function switchNavTab(targetTab) {
+            const tabs = ['study', 'revision', 'book-solutions', 'questions'];
+            tabs.forEach(t => {
+                const pane = document.getElementById('pane-' + t);
+                const navBtn = document.getElementById('tabNav-' + t);
+                if (pane) pane.classList.add('hidden');
+                if (navBtn) navBtn.classList.remove('active');
+            });
+
+            const activePane = document.getElementById('pane-' + targetTab);
+            const activeNavBtn = document.getElementById('tabNav-' + targetTab);
+            if (activePane) activePane.classList.remove('hidden');
+            if (activeNavBtn) activeNavBtn.classList.add('active');
+
+            window.scrollTo({ top: 120, behavior: 'smooth' });
+        }
+
+        const irPhasesData = [
+            {
+                step: 1,
+                title: "المرحلة 1: التحضير (Preparation)",
+                desc: "إنشاء إجراءات وهياكل استجابة مسبقاً، استعداداً للحوادث قبل وقوعها، وتحديد أدوار الفريق وسياسات التعامل.",
+                icon: "fa-solid fa-clipboard-check",
+                color: "bg-orange-100 text-beschool-orange"
+            },
+            {
+                step: 2,
+                title: "المرحلة 2: الاكتشاف (Detection)",
+                desc: "اكتشاف وتأكيد وقوع حادث أمني، وتمييزه عن الأنشطة والتحديثات الروتينية العادية.",
+                icon: "fa-solid fa-magnifying-glass",
+                color: "bg-blue-100 text-blue-700"
+            },
+            {
+                step: 3,
+                title: "المرحلة 3: الاحتواء (Containment)",
+                desc: "تحديد نطاق التأثير وعزل الجزء المتأثر بالحادث بالطريقة المناسبة بحيث لا ينتشر الضرر أكثر في الشبكة.",
+                icon: "fa-solid fa-shield-halved",
+                color: "bg-rose-100 text-rose-700"
+            },
+            {
+                step: 4,
+                title: "المرحلة 4: إزالة التهديد - الاستئصال (Eradication)",
+                desc: "إزالة التهديد ومسبباته بالكامل من البيئة، مثل حذف البرمجيات الخبيثة ومعالجة الثغرة المستغلة.",
+                icon: "fa-solid fa-trash-can",
+                color: "bg-purple-100 text-purple-700"
+            },
+            {
+                step: 5,
+                title: "المرحلة 5: الاستعادة (Recovery)",
+                desc: "إعادة الأنظمة والخدمات إلى حالة تشغيل آمنة وطبيعية، وقد تشمل الاستعادة من نسخة احتياطية سليمة.",
+                icon: "fa-solid fa-rotate-left",
+                color: "bg-emerald-100 text-emerald-700"
+            },
+            {
+                step: 6,
+                title: "المرحلة 6: الوقاية - الدروس المستفادة والتحسين (Lessons Learned)",
+                desc: "تحليل ما حدث، وتوثيق الدروس، وتحسين الضوابط الأمنية لتقليل احتمال تكرار الحادث وأثره.",
+                icon: "fa-solid fa-graduation-cap",
+                color: "bg-amber-100 text-amber-800"
+            }
+        ];
+
+        function setIRPhase(phaseNum) {
+            const p = irPhasesData[phaseNum - 1];
+            if (!p) return;
+
+            document.getElementById('irStepBadge').innerText = `المرحلة ${p.step} / 6`;
+            document.getElementById('irPhaseTitle').innerText = p.title;
+            document.getElementById('irPhaseDesc').innerText = p.desc;
+
+            const iconBox = document.getElementById('irPhaseIconBox');
+            iconBox.className = `w-12 h-12 rounded-xl ${p.color} flex items-center justify-center text-xl shrink-0 font-bold`;
+            iconBox.innerHTML = `<i class="${p.icon}"></i>`;
+
+            for (let i = 1; i <= 6; i++) {
+                const btn = document.getElementById(`irBtn-${i}`);
+                if (btn) {
+                    if (i === phaseNum) {
+                        btn.className = "p-2.5 rounded-xl border-2 border-beschool-orange bg-orange-50 font-black text-beschool-navy shadow-xs transition";
+                    } else {
+                        btn.className = "p-2.5 rounded-xl border border-slate-200 bg-white font-bold text-beschool-navy hover:bg-slate-100 transition";
+                    }
+                }
+            }
+        }
+
+        function selectMatrixCell(level, detail, color) {
+            const badge = document.getElementById('matrixCellBadge');
+            const title = document.getElementById('matrixCellTitle');
+            const desc = document.getElementById('matrixCellDesc');
+            const card = document.getElementById('matrixDetailCard');
+
+            badge.innerText = `الخلية المحددة: ${detail}`;
+            title.innerText = `درجة الخطر: ${level}`;
+
+            if (color === 'red') {
+                card.className = "p-4 rounded-xl border-2 border-rose-500 bg-rose-50 text-right space-y-1 transition-all";
+                title.className = "text-xs sm:text-sm font-black text-rose-950";
+                desc.innerText = "أعلى أولوية في مصفوفة المخاطر؛ يجب معالجة هذه المخاطر أولاً وفوراً (مثل هجمات برمجيات الفدية التي تشفر الملفات الحيوية).";
+            } else if (color === 'orange') {
+                card.className = "p-4 rounded-xl border-2 border-orange-400 bg-orange-50 text-right space-y-1 transition-all";
+                title.className = "text-xs sm:text-sm font-black text-orange-950";
+                desc.innerText = "مخاطر ذات أولوية متقدمة؛ تتطلب تدخلاً سريعاً ومجدولاً لتفادي تفاقم الضرر أو زيادة فرص وقوعه.";
+            } else if (color === 'amber') {
+                card.className = "p-4 rounded-xl border-2 border-amber-400 bg-amber-50 text-right space-y-1 transition-all";
+                title.className = "text-xs sm:text-sm font-black text-amber-950";
+                desc.innerText = "مخاطر متوسطة الأولوية؛ يعتمد ترتيب معالجتها على السياق والضوابط المتاحة وتكلفة التأمين.";
+            } else {
+                card.className = "p-4 rounded-xl border-2 border-emerald-400 bg-emerald-50 text-right space-y-1 transition-all";
+                title.className = "text-xs sm:text-sm font-black text-emerald-950";
+                desc.innerText = "مخاطر منخفضة الأولوية؛ تأثيرها طفيف أو احتمال وقوعها ضعيف، ويمكن إدارتها بضوابط دورية بسيطة.";
+            }
+        }
+
+        function copySummaryTextL23() {
+            const summaryString = `
+ملخص الدرس 2-3: الاستجابة للحوادث وإدارة المخاطر
+منصة be;school مدرسة البرمجة
+
+1. الحادث الأمني (Security Incident):
+- حدث يؤثر في سرية المعلومات أو سلامتها أو توافرها، أو يهددها بجدية، أو يخالف سياسة أمنية.
+- أنواعه النموذجية: تسرب المعلومات، التلاعب بالبيانات، انقطاع الخدمة.
+
+2. مراحل الاستجابة الست:
+(1) التحضير: إنشاء إجراءات وهياكل استجابة مسبقاً.
+(2) الاكتشاف: تأكيد وقوع الحادث.
+(3) الاحتواء: عزل الجزء المتأثر لمنع انتشار الضرر.
+(4) إزالة التهديد (الاستئصال): إزالة التهديد ومسبباته (حذف البرمجيات الخبيثة ومعالجة الثغرة).
+(5) الاستعادة: إعادة الأنظمة والخدمات لحالة آمنة وطبيعية (من نسخة احتياطية سليمة).
+(6) الدروس المستفادة والتحسين: تحليل ما حدث وتوثيق الدروس وتحسين الحماية.
+
+3. تقييم المخاطر (مصفوفة التأثير × الاحتمالية):
+- درجة الخطر = درجة التأثير × درجة الاحتمالية.
+- تعالج المخاطر ذات التأثير المرتفع والاحتمالية المرتفعة أولاً كأعلى أولوية.
+            `.trim();
+
+            const temp = document.createElement('textarea');
+            temp.value = summaryString;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+
+            const label = document.getElementById('copyBtnLabel23');
+            label.innerText = "تم النسخ بنجاح!";
+            setTimeout(() => { label.innerText = "نسخ الملخص"; }, 2000);
+        }
+
+        let isTTSActive23 = false;
+        let preferredVoiceL23 = null;
+
+        function detectEgyptianVoiceL23() {
+            if (!('speechSynthesis' in window)) return;
+            const voices = window.speechSynthesis.getVoices();
+            preferredVoiceL23 = voices.find(v => v.lang === 'ar-EG' || v.lang.includes('ar_EG') || v.name.includes('Egypt') || v.name.includes('Egyptian'))
+                               || voices.find(v => v.lang.startsWith('ar'))
+                               || null;
+        }
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = detectEgyptianVoiceL23;
+            detectEgyptianVoiceL23();
+        }
+
+        function readSummaryAloudL23() {
+            if (!('speechSynthesis' in window)) return;
+
+            if (isTTSActive23) {
+                window.speechSynthesis.cancel();
+                isTTSActive23 = false;
+                document.getElementById('ttsIcon23').className = "fa-solid fa-volume-high";
+                document.getElementById('ttsLabel23').innerText = "استمع صوتياً للملخص (مصري سريع)";
+            } else {
+                window.speechSynthesis.cancel();
+
+                const speechContent = "ملخص الدرس التالت من الوحدة التانية: الاستجابة للحوادث وإدارة المخاطر في مادة البرمجة والذكاء الاصطناعي من منصة بي سكول مدرسة البرمجة. " +
+                    "أولاً: الحادث الأمني هو حدث بيأثر على سرية أو سلامة أو توافر البيانات؛ زي تسريب المعلومات، أو التلاعب بالملفات، أو انقطاع الخدمة بسبب هجوم على السيرفر. " +
+                    "ثانياً: مراحل الاستجابة الست بتبدأ بالتحضير وتجهيز الإجراءات مسبقاً، وبعدها الاكتشاف، ثم الاحتواء بعزل الجزء المتأثر عشان نمنع انتشار الضرر، وبعدين إزالة التهديد بحذف الفيروسات وسد الثغرة، وخامس مرحلة الاستعادة بتشغيل الأنظمة والنسخ الاحتياطية السليمة، وأخيراً الدروس المستفادة والتحسين لمنع تكرار الحادث. " +
+                    "ثالثاً: مصفوفة تقييم المخاطر؛ بنحسب درجة الخطر بضرب التأثير في الاحتمالية، والمخاطر اللي تأثيرها عالي واحتمالها عالي بنعالجها أولاً كأعلى أولوية.";
+
+                const utter = new SpeechSynthesisUtterance(speechContent);
+                utter.lang = 'ar-EG';
+                utter.rate = 1.18;
+                utter.pitch = 1.05;
+
+                if (!preferredVoiceL23) detectEgyptianVoiceL23();
+                if (preferredVoiceL23) utter.voice = preferredVoiceL23;
+
+                utter.onend = () => {
+                    isTTSActive23 = false;
+                    document.getElementById('ttsIcon23').className = "fa-solid fa-volume-high";
+                    document.getElementById('ttsLabel23').innerText = "استمع صوتياً للملخص (مصري سريع)";
+                };
+
+                utter.onerror = () => {
+                    isTTSActive23 = false;
+                    document.getElementById('ttsIcon23').className = "fa-solid fa-volume-high";
+                    document.getElementById('ttsLabel23').innerText = "استمع صوتياً للملخص (مصري سريع)";
+                };
+
+                window.speechSynthesis.speak(utter);
+                isTTSActive23 = true;
+                document.getElementById('ttsIcon23').className = "fa-solid fa-pause text-beschool-orange";
+                document.getElementById('ttsLabel23').innerText = "إيقاف الاستماع";
+            }
+        }
+
+        // بنك الـ 50 سؤالاً المشتق حصراً من كتاب الوزارة وكتاب الفائز وملف تقييمات البرمجة (بتوزيع عشوائي متوازن للخيارات أ، ب، جـ، د)
+        const quizBank = [
+            // 1 (الإجابة: جـ)
+            {
+                type: "مفهوم أساسي",
+                q: "ما التوصيف الدقيق لمفهوم 'الحادث الأمني' المعتمد في المنهج؟",
+                choices: [
+                    "إجراء تحديث روتيني للنظام لإضافة ميزات برمجية جديدة",
+                    "عمل نسخة احتياطية دورية لقواعد البيانات وحفظها على خادم خارجي",
+                    "حدث يؤثر في سرية المعلومات أو سلامتها أو توافرها، أو يهددها بجدية، أو يخالف سياسة أمنية",
+                    "انخفاض سرعة الاتصال بالإنترنت أثناء ساعات الذروة في الشبكة المحلية"
+                ],
+                correctIndex: 2,
+                hint: "الحادث الأمني يمس أركان ثالوث الأمان (السرية، السلامة، التوافر) أو يخالف السياسات الأمنية."
+            },
+            // 2 (الإجابة: ب)
+            {
+                type: "أسئلة التقييمات",
+                q: "أي من الحالات التالية يمثل مثالاً نموذجياً على حادث أمني يؤثر صراحة في 'توافر الخدمة'؟",
+                choices: [
+                    "تعديل درجات الطلاب داخل قاعدة البيانات دون تصريح مسبق",
+                    "انقطاع خدمة الموقع الإلكتروني بسبب هجمات إغراق الخادم المنسقة",
+                    "تسرب أرقام هواتف العملاء وعناوينهم الشخصية إلى الخارج",
+                    "إنشاء إجراءات وهياكل استجابة مسبقاً استعداداً للطوارئ"
+                ],
+                correctIndex: 1,
+                hint: "انقطاع الخدمة (Service Outage) يمنع وصول المستخدمين الشرعيين للخادم وهو خرق لركن التوافر."
+            },
+            // 3 (الإجابة: أ)
+            {
+                type: "بما تفسر / علل",
+                q: "بما تفسر: لماذا يجب أن تأتي مرحلة 'الاحتواء' قبل مرحلة 'الاستئصال' (إزالة التهديد) في نموذج الاستجابة؟",
+                choices: [
+                    "لأن البدء بالاستئصال قبل عزل الأنظمة المتضررة قد يدفع المهاجم لنقل الهجوم لأجهزة أخرى وتدمير الأدلة",
+                    "لأن برامج مكافحة الفيروسات لا يمكن تثبيتها إلا بعد مسح كافة سجلات الأحداث",
+                    "لأن مرحلة الاحتواء تختص فقط بإعادة تشغيل خوادم قواعد البيانات من النسخ الاحتياطية",
+                    "لأن القوانين تحظر عزل الأجهزة المصابة بعد البدء في إزالة البرمجيات الخبيثة"
+                ],
+                correctIndex: 0,
+                hint: "سؤال توقف وفكر ص 47: عزل الضرر وتطويقه أولاً يمنع تفشي الهجوم أثناء محاولات الإصلاح."
+            },
+            // 4 (الإجابة: د)
+            {
+                type: "أسئلة كتاب الفائز",
+                q: "ما الهدف الأساسي للمرحلة الأولى من مراحل الاستجابة للحوادث وهي مرحلة 'التحضير'؟",
+                choices: [
+                    "استرجاع قواعد البيانات من النسخ الاحتياطية السليمة فور وقوع الاختراق",
+                    "تحديد نطاق التأثير وعزل الحواسب المصابة عن باقي الشبكة",
+                    "تحليل أسباب الحادث بعد انتهائه وتوثيق التقرير النهائي للوقاية",
+                    "إنشاء إجراءات وهياكل استجابة مسبقاً، استعداداً للحوادث قبل وقوعها"
+                ],
+                correctIndex: 3,
+                hint: "التحضير ينفذ قبل وقوع الحادث لضمان جاهزية الخطط والفرق وتفادي الارتباك عند المفاجأة."
+            },
+            // 5 (الإجابة: ب)
+            {
+                type: "فكر كمهندس / اتخاذ قرار",
+                q: "فكر كمهندس: تعرض نظام سجلات الطلاب بمدرسة لهجوم ببرمجية فدية شفرت الملفات وحظرت دخول الموظفين، ما الخطوة الأولى الأهم؟",
+                choices: [
+                    "البدء فوراً بمرحلة الاستعادة واسترجاع الملفات من النسخ الاحتياطية",
+                    "تنفيذ مرحلة الاحتواء فوراً بعزل الحواسب والخوادم المتضررة عن الشبكة لمنع تفشي التشفير",
+                    "عقد اجتماع الدروس المستفادة لتحليل أسباب ثغرة النظام",
+                    "إعادة تشغيل الخادم عدة مرات لفك التشفير تلقائياً"
+                ],
+                correctIndex: 1,
+                hint: "ورشة فكر كمهندس ص 49: عزل الأجهزة المصابة يمنع انتشار الفدية لباقي أجهزة المدرسة."
+            },
+            // 6 (الإجابة: جـ)
+            {
+                type: "مفهوم أساسي",
+                q: "أي الخيارات التالية لا يمثل مثالاً لحادث أمني وفق تصنيف المنهج؟",
+                choices: [
+                    "تشفير ملفات المستشفى بسبب الإصابة ببرنامج فدية",
+                    "تسرب معلومات العملاء السرية إلى الخارج عبر وصول غير مصرح به",
+                    "إجراء تحديث دوري للبرنامج لإضافة ميزات أمنية وتحسينية جديدة",
+                    "تعديل السجلات المالية داخل نظام البنك دون تصريح رسمي"
+                ],
+                correctIndex: 2,
+                hint: "تدرب 2 ص 49: التحديثات الدورية إجراءات صيانة تطويرية معتادة وليست حوادث أمنية."
+            },
+            // 7 (الإجابة: أ)
+            {
+                type: "أسئلة التقييمات",
+                q: "وفقاً لنموذج تقييم المخاطر المعتمد، كيف يتم حساب وتقدير 'درجة الخطر'؟",
+                choices: [
+                    "درجة الخطر = درجة التأثير × درجة الاحتمالية",
+                    "درجة الخطر = درجة التأثير + درجة الاحتمالية",
+                    "درجة الخطر = درجة التأثير ÷ درجة الاحتمالية",
+                    "درجة الخطر = درجة التأثير - درجة الاحتمالية"
+                ],
+                correctIndex: 0,
+                hint: "المعادلة المعتمدة في تقييمات الوزارة وكتاب المدرسة: حاصل ضرب التأثير في الاحتمالية."
+            },
+            // 8 (الإجابة: د)
+            {
+                type: "أسئلة كتاب الفائز",
+                q: "ما التوصيف الصحيح لمرحلة 'إزالة التهديد (الاستئصال)' في نموذج الاستجابة؟",
+                choices: [
+                    "البحث عن الحوادث واكتشافها وتأكيد وقوعها الأولي",
+                    "إعادة الأنظمة والخدمات إلى حالة تشغيل طبيعية من النسخ الاحتياطية",
+                    "تحديد نطاق الضرر وعزل الجزء المصاب فقط عن باقي المؤسسة",
+                    "إزالة التهديد ومسبباته بالكامل؛ مثل حذف البرمجيات الخبيثة ومعالجة الثغرة المستغلة"
+                ],
+                correctIndex: 3,
+                hint: "الاستئصال هو اقتلاع أسباب المشكلة البرمجية وسد الثغرات المفتوحة."
+            },
+            // 9 (الإجابة: ب)
+            {
+                type: "أسئلة التقييمات",
+                q: "ماذا يقصد بمفهوم 'التأثير (Impact)' في سياق مصفوفة تقييم المخاطر؟",
+                choices: [
+                    "مدى فرصة واحتمالية وقوع الحادث في ظل الظروف الحالية",
+                    "حجم ومقدار الضرر والخسائر الناتجة إذا وقع الحدث أو المخاطرة بالفعل",
+                    "الزمن المستغرق لعزل الأجهزة المصابة بالبرمجيات الخبيثة",
+                    "عدد أجهزة الحاسوب الموصولة بالشبكة الداخلية للمؤسسة"
+                ],
+                correctIndex: 1,
+                hint: "التأثير يعبر عن حجم الخسائر والضرر المترتب على تحقق الخطر."
+            },
+            // 10 (الإجابة: جـ)
+            {
+                type: "فكر كمهندس / اتخاذ قرار",
+                q: "فكر كمهندس: لماذا يُعد البدء بمرحلة الاستعادة قبل إزالة التهديد خطأً جسيماً في إدارة الحوادث؟",
+                choices: [
+                    "لأن الاستعادة تؤدي تلقائياً إلى زيادة سرعة المعالج في الحواسب القديمة",
+                    "لأن النسخ الاحتياطية تحذف نفسها ذاتياً إذا لم تكن الأجهزة معزولة شبكياً",
+                    "لأن البرمجية الخبيثة أو الثغرة المفتوحة قد تعاود نشاطها فوراً وتصيب وتشفر البيانات المستعادة مجدداً",
+                    "لأن ذلك يعطل مرحلة الدروس المستفادة ويمنع توثيق التقارير"
+                ],
+                correctIndex: 2,
+                hint: "سؤال نمط الامتحان المقالي ص 49: إذا لم يستأصل التهديد فالبيانات المستعادة ستصاب فوراً."
+            },
+            // 11 (الإجابة: أ)
+            {
+                type: "مفهوم أساسي",
+                q: "ما المرحلة التي تهدف إلى 'تحديد نطاق التأثير بحيث لا ينتشر الضرر أكثر'؟",
+                choices: [
+                    "مرحلة الاحتواء (Containment)",
+                    "مرحلة الاستعادة (Recovery)",
+                    "مرحلة التحضير (Preparation)",
+                    "مرحلة إزالة التهديد (Eradication)"
+                ],
+                correctIndex: 0,
+                hint: "الاحتواء هو عزل الجزء المتأثر لمنع انتشار الضرر لباقي الأنظمة."
+            },
+            // 12 (الإجابة: د)
+            {
+                type: "أسئلة التقييمات",
+                q: "أي فئة من المخاطر تمثل 'أعلى أولوية' وتلزم المؤسسة بمعالجتها أولاً وفق مصفوفة تقييم المخاطر؟",
+                choices: [
+                    "المخاطر ذات التأثير المنخفض والاحتمالية المرتفعة",
+                    "المخاطر ذات التأثير المنخفض والاحتمالية المنخفضة",
+                    "المخاطر ذات التأثير المتوسط والاحتمالية المنخفضة",
+                    "المخاطر ذات التأثير المرتفع والاحتمالية المرتفعة"
+                ],
+                correctIndex: 3,
+                hint: "كتاب الوزارة ص 48: يجب معالجة المخاطر ذات التأثير المرتفع والاحتمالية المرتفعة أولاً."
+            },
+            // 13 (الإجابة: ب)
+            {
+                type: "بما تفسر / علل",
+                q: "بما تفسر: لماذا قد تحتاج الاستجابة الفعلية للحوادث إلى العودة إلى مرحلة سابقة مثل الاحتواء أو الاستئصال؟",
+                choices: [
+                    "لأن مراحل الاستجابة تطبق في الشركات الكبرى فقط دون المؤسسات الصغيرة",
+                    "لأنه قد يُكشف أثناء الاسترداد عن بقايا للتهديد أو قنوات اتصال خفية تستلزم العودة للاحتواء أو الاستئصال",
+                    "لأن القوانين تلزم بتكرار جميع المراحل الست مرتين متتاليتين لكل حادث",
+                    "لأن مرحلة التحضير لا يمكن تنفيذها إلا بعد الانتهاء الكامل من الاستعادة"
+                ],
+                correctIndex: 1,
+                hint: "كتاب الوزارة ص 47: الاستجابة الفعلية قد تتضمن تداخلاً أو عودة لمرحلة سابقة إذا ظهرت بقايا للتهديد."
+            },
+            // 14 (الإجابة: جـ)
+            {
+                type: "أسئلة كتاب الفائز",
+                q: "ما المقصود بمصطلح 'الاحتمالية (Likelihood)' في سياق تقييم المخاطر؟",
+                choices: [
+                    "مقدار الخسارة المالية الناتجة عن تعطل الموقع الإلكتروني",
+                    "عدد الساعات المستغرقة لاسترجاع النسخة الاحتياطية للبيانات",
+                    "مدى احتمال وقوع الحدث أو المخاطرة في ظل البيئة الحالية",
+                    "حجم البيانات المسربة من خوادم المؤسسة إلى خارجها"
+                ],
+                correctIndex: 2,
+                hint: "الاحتمالية تقيس مدى فرصة وإمكانية تحقق الحدث الأمني."
+            },
+            // 15 (الإجابة: أ)
+            {
+                type: "مفهوم أساسي",
+                q: "ما المرحلة التي تُختتم بها المراحل الست وتتضمن تحليل ما حدث وتوثيق الدروس وتحسين الضوابط لمنع التكرار؟",
+                choices: [
+                    "الدروس المستفادة والتحسين (الوقاية)",
+                    "مرحلة الاستعادة والتعافي الكامل",
+                    "مرحلة الاكتشاف وتأكيد الواقعة",
+                    "مرحلة الاحتواء والعزل الفوري"
+                ],
+                correctIndex: 0,
+                hint: "المرحلة السادسة والأخيرة المعنية بتحليل الأسباب وتطوير خطط الوقاية."
+            },
+            // 16 (الإجابة: د)
+            {
+                type: "أسئلة التقييمات",
+                q: "تعديل البيانات داخل نظام ما دون تصريح يمثل حادثاً أمنياً من نوع:",
+                choices: [
+                    "انقطاع الخدمة (Service Outage)",
+                    "تسرب المعلومات (Data Breach)",
+                    "تحديث الأنظمة (System Update)",
+                    "التلاعب بالبيانات (Data Tampering)"
+                ],
+                correctIndex: 3,
+                hint: "تعديل أو محو السجلات دون إذن مشروع يمس سلامة البيانات ويصنف كتلاعب."
+            },
+            // 17 (الإجابة: ب)
+            {
+                type: "فكر كمهندس / اتخاذ قرار",
+                q: "فكر كمهندس: مدرسة تواجه خطرين: (1) هجوم فدية آخر، (2) انقطاع كهرباء قصير. أيهما يقدم في أولوية المعالجة ولماذا؟",
+                choices: [
+                    "انقطاع الكهرباء لأن أثره مدمر ويؤدي لفقدان دائم لكافة السجلات",
+                    "هجوم الفدية لأن تأثيره كبير جداً واحتماليته مرتفعة، بينما انقطاع الكهرباء تأثيره محدود واحتماله منخفض",
+                    "كلا الخطرين متساويان تماماً ويجب معالجتهما بنفس اللحظة دون تمييز",
+                    "تجاهل الخطرين معاً والتركيز على تحديث شاشات حواسيب الطلاب فقط"
+                ],
+                correctIndex: 1,
+                hint: "ورشة فكر كمهندس ص 49: هجوم الفدية ذو تأثير كارثي واحتمال عالٍ فيعالج أولاً."
+            },
+            // 18 (الإجابة: جـ)
+            {
+                type: "أسئلة كتاب الفائز",
+                q: "ما الترتيب التسلسلي العام المعتمد للمراحل الست للاستجابة للحوادث؟",
+                choices: [
+                    "الاكتشاف ➔ الاحتواء ➔ التحضير ➔ الاستئصال ➔ الاستعادة ➔ الوقاية",
+                    "التحضير ➔ الاحتواء ➔ الاكتشاف ➔ الاستعادة ➔ الاستئصال ➔ الوقاية",
+                    "التحضير ➔ الاكتشاف ➔ الاحتواء ➔ الاستئصال ➔ الاستعادة ➔ الدروس المستفادة والتحسين",
+                    "التحضير ➔ الاستعادة ➔ الاكتشاف ➔ الاحتواء ➔ الاستئصال ➔ الوقاية"
+                ],
+                correctIndex: 2,
+                hint: "الشكل 2.3.1 وتدرب 1 ص 49: التحضير ➔ الاكتشاف ➔ الاحتواء ➔ الاستئصال ➔ الاستعادة ➔ الدروس المستفادة."
+            },
+            // 19 (الإجابة: أ)
+            {
+                type: "بما تفسر / علل",
+                q: "بما تفسر: لماذا تلجأ المؤسسات لتقييم المخاطر وتحديد أولوياتها بدلاً من معالجة كل المخاطر دفعة واحدة؟",
+                choices: [
+                    "لأن الفريق والمؤسسة لا يستطيعون معالجة كل المخاطر في الوقت نفسه لمحدودية الموارد والوقت",
+                    "لأن القانون الدولي يحظر تطبيق أكثر من إجراء وقائي واحد كل عام",
+                    "لأن المخاطر المنخفضة تزول ذاتياً دون الحاجة لأي متابعة أو أنظمة حماية",
+                    "لأن مصفوفة تقييم المخاطر صممت للمصانع والشركات البترولية فقط"
+                ],
+                correctIndex: 0,
+                hint: "كتاب الوزارة ص 46: لا تستطيع المؤسسة معالجة كل شيء معاً، فيحدد التأثير × الاحتمالية الأولويات."
+            },
+            // 20 (الإجابة: د)
+            {
+                type: "أسئلة التقييمات",
+                q: "ما المرحلة التي تهدف صراحة إلى 'إعادة الأنظمة والخدمات إلى حالة تشغيل آمنة وطبيعية'؟",
+                choices: [
+                    "مرحلة التحضير المسبق",
+                    "مرحلة الاحتواء الشبكي",
+                    "مرحلة الدروس المستفادة",
+                    "مرحلة الاستعادة (Recovery)"
+                ],
+                correctIndex: 3,
+                hint: "الاستعادة تعني عودة النظام للعمل الطبيعي الآمن واسترجاع البيانات النظيفة."
+            },
+            // 21 (الإجابة: ب)
+            {
+                type: "فكر كمهندس / اتخاذ قرار",
+                q: "فكر كمهندس: متجر إلكتروني اكتشف للتو تسرب بيانات العملاء، ما المرحلتان التاليتان الواجب تنفيذهما فوراً بالترتيب؟",
+                choices: [
+                    "الاستعادة ثم توثيق الدروس المستفادة",
+                    "الاحتواء (إغلاق مسار التسريب) يليه إزالة التهديد (الاستئصال بسد الثغرة ومعالجتها)",
+                    "التحضير المسبق يليه إجراء التحديث الدوري",
+                    "شراء خوادم جديدة ثم إنكار حدوث أي تسريب"
+                ],
+                correctIndex: 1,
+                hint: "سؤال طبق ما تعلمته ص 50: بعد اكتشاف التسرب نبدأ بالاحتواء ثم الاستئصال."
+            },
+            // 22 (الإجابة: جـ)
+            {
+                type: "مفهوم أساسي",
+                q: "خروج المعلومات الشخصية أو السرية إلى أطراف غير مصرح لها يمثل حادثاً أمنياً من نوع:",
+                choices: [
+                    "انقطاع الخدمة (Service Outage)",
+                    "التلاعب بالبيانات (Data Tampering)",
+                    "تسرب المعلومات (Data Breach)",
+                    "الصيانة التنبؤية للبيانات"
+                ],
+                correctIndex: 2,
+                hint: "تسرب المعلومات يعني وصول أطراف خارجية لبيانات خاصة وسرية دون إذن."
+            },
+            // 23 (الإجابة: أ)
+            {
+                type: "أسئلة كتاب الفائز",
+                q: "ما الإجراء الصحيح الذي يتبع مباشرة بعد إكمال مرحلة 'التحضير' في التسلسل العام؟",
+                choices: [
+                    "مرحلة الاكتشاف (Detection)",
+                    "مرحلة إزالة التهديد (Eradication)",
+                    "مرحلة الاستعادة والتشغيل",
+                    "مرحلة الاحتواء والعزل"
+                ],
+                correctIndex: 0,
+                hint: "التسلسل: التحضير يليه الاكتشاف لتأكيد ورصد وقوع الحادث الأمني."
+            },
+            // 24 (الإجابة: د)
+            {
+                type: "أسئلة التقييمات",
+                q: "في مصفوفة تقييم المخاطر، ما تصنيف الخطر الذي يتصف بـ 'تأثير كبير واحتمالية منخفضة'؟",
+                choices: [
+                    "مرتفع جداً دائماً",
+                    "منخفض جداً",
+                    "معدوم الخطورة",
+                    "متوسط الأولوية"
+                ],
+                correctIndex: 3,
+                hint: "كتاب الوزارة ص 48 (الشكل 2.3.2): تأثير مرتفع مع احتمالية منخفضة يقع في نطاق 'متوسط'."
+            },
+            // 25 (الإجابة: ب)
+            {
+                type: "بما تفسر / علل",
+                q: "بما تفسر: لماذا لا تضمن وسائل الوقاية والدفاع في العمق منع جميع الحوادث الأمنية بنسبة 100%؟",
+                choices: [
+                    "لأن جدران الحماية تتوقف عن العمل كل 24 ساعة بصورة إجبارية",
+                    "لأن الأنظمة معقدة، وتوجد دائماً ثغرات برمجية غير مكتشفة، وأخطاء بشرية، وتطور مستمر لأساليب الهجوم",
+                    "لأن الحوادث الأمنية تصيب الأجهزة المنزلية فقط دون خوادم المؤسسات",
+                    "لأن النسخ الاحتياطية تلغي عمل التشفير والشهادات الرقمية"
+                ],
+                correctIndex: 1,
+                hint: "كتاب الوزارة ص 46: حتى النظام المحمي جيداً قد يتعرض لحادث أمني، لذا لا غنى عن خطة استجابة."
+            },
+            // 26 (الإجابة: جـ)
+            {
+                type: "مفهوم أساسي",
+                q: "ما المرحلة التي يُفصل فيها الحاسوب المصاب بالبرمجيات الخبيثة عن الشبكة لمنع اتساع الضرر؟",
+                choices: [
+                    "مرحلة التحضير",
+                    "مرحلة الاستعادة",
+                    "مرحلة الاحتواء",
+                    "مرحلة الوقاية"
+                ],
+                correctIndex: 2,
+                hint: "المثال المحلول ص 48 وتدريبات الفائز: فصل الحاسوب عن الشبكة هو إجراء احتواء."
+            },
+            // 27 (الإجابة: أ)
+            {
+                type: "أسئلة كتاب الفائز",
+                q: "ما الإجراء النموذجي الذي يتم تنفيذه في مرحلة 'الاستعادة (Recovery)'؟",
+                choices: [
+                    "إعادة تشغيل الأنظمة والخدمات بأمان واسترجاع البيانات من نسخة احتياطية سليمة",
+                    "فصل كابلات الشبكة لعزل الأجهزة المتضررة عن باقي الخوادم",
+                    "البحث عن سجلات الأحداث لتأكيد وقوع الحادث الأمني",
+                    "كتابة تقرير شامل لمجلس الإدارة لتوثيق أسباب وقوع الهجوم"
+                ],
+                correctIndex: 0,
+                hint: "الاستعادة تشمل تشغيل الأنظمة بأمان واسترجاع البيانات من نسخ احتياطية نظيفة."
+            },
+            // 28 (الإجابة: د)
+            {
+                type: "أسئلة التقييمات",
+                q: "وفقاً لمصفوفة تقييم المخاطر، التهديد الذي يتصف بـ 'تأثير صغير واحتمالية منخفضة' يُصنف بأنه:",
+                choices: [
+                    "ذو أولوية قصوى ومعالجة فورية",
+                    "مرتفع جداً",
+                    "متوسط الأولوية",
+                    "منخفض جداً"
+                ],
+                correctIndex: 3,
+                hint: "الشكل 2.3.2 ص 48: تأثير منخفض مع احتمالية منخفضة يقع في أقصى خانة (منخفض جداً)."
+            },
+            // 29 (الإجابة: ب)
+            {
+                type: "فكر كمهندس / اتخاذ قرار",
+                q: "فكر كمهندس: اكتشف مسؤول أمن في مرحلة الاستعادة وجود قنوات اتصال وبرمجيات خفية لم تُزل، فما القرار الهندسي الصحيح؟",
+                choices: [
+                    "مواصلة فتح الموقع للجمهور والاعتماد على جدار الحماية فقط",
+                    "التراجع فوراً والعودة إلى مرحلتي الاحتواء وإزالة التهديد للقضاء عليها تماماً",
+                    "تخطي مرحلة الوقاية ومسح ملفات النسخ الاحتياطية",
+                    "إيقاف العمل بالنموذج السداسي والاستسلام لدفع الفدية"
+                ],
+                correctIndex: 1,
+                hint: "سؤال نمط الامتحان المقالي ص 49: العودة للاحتواء والاستئصال لتطويق أي تهديد كامن."
+            },
+            // 30 (الإجابة: جـ)
+            {
+                type: "مفهوم أساسي",
+                q: "ما التعريف الدقيق لمصطلح 'الخطر' في إدارة المخاطر السيبرانية؟",
+                choices: [
+                    "توقف المعالج المركزي عن العمل بسبب ارتفاع درجة حرارته",
+                    "سرقة كلمة المرور الخاصة بأحد موظفي الحسابات حصراً",
+                    "احتمال أن يقع حدث يسبب ضرراً، مع مراعاة احتمال وقوعه وحجم أثره",
+                    "تكلفة شراء جدار حماية إضافي للمؤسسة"
+                ],
+                correctIndex: 2,
+                hint: "كتاب الوزارة ص 47: الخطر يجمع بين احتمال وقوع الحدث الضار وحجم الأثر المترتب عليه."
+            },
+            // 31 (الإجابة: أ)
+            {
+                type: "أسئلة كتاب الفائز",
+                q: "أي الأنشطة التالية يمثل جوهر مرحلة 'التحضير'؟",
+                choices: [
+                    "إنشاء وتدريب هياكل وإجراءات الاستجابة مسبقاً وتجهيز الخطط قبل وقوع الحادث",
+                    "عزل الخوادم المصابة بفصل كابلات الشبكة والـ Wi-Fi",
+                    "حذف الفيروسات وإغلاق الثغرات التي استغلها المهاجم",
+                    "استرجاع قواعد البيانات من النسخ الاحتياطية السليمة"
+                ],
+                correctIndex: 0,
+                hint: "المثال المحلول ص 48: إنشاء إجراءات استجابة مسبقاً هو التحضير."
+            },
+            // 32 (الإجابة: د)
+            {
+                type: "أسئلة التقييمات",
+                q: "في مصفوفة تقييم المخاطر، ما تقييم الخطر ذي 'التأثير المرتفع والاحتمالية المتوسطة'؟",
+                choices: [
+                    "منخفض جداً",
+                    "منخفض",
+                    "معدوم",
+                    "مرتفع"
+                ],
+                correctIndex: 3,
+                hint: "الشكل 2.3.2 ص 48: تأثير مرتفع مع احتمالية متوسطة يصنف في خانة 'مرتفع'."
+            },
+            // 33 (الإجابة: ب)
+            {
+                type: "بما تفسر / علل",
+                q: "بما تفسر: لماذا يعد توثيق الدروس المستفادة في المرحلة الأخيرة أمراً حاسماً للمؤسسة؟",
+                choices: [
+                    "لأنه يتيح للإدارة معاقبة الموظفين المتسببين في الخطأ بالخصم المالي",
+                    "لأنه يحلل أسباب الحادث ويوثق نقاط الضعف ويحدث الضوابط لتقليل احتمال التكرار والأثر مستقبلاً",
+                    "لأنه يلغي الحاجة إلى إنشاء نسخ احتياطية للبيانات لاحقاً",
+                    "لأنه يرفع سرعة الاتصال بالإنترنت داخل شبكة المؤسسة"
+                ],
+                correctIndex: 1,
+                hint: "الدروس المستفادة والتحسين تبني مناعة المؤسسة وتطور إجراءات الدفاع لمنع تكرار الثغرة."
+            },
+            // 34 (الإجابة: جـ)
+            {
+                type: "مفهوم أساسي",
+                q: "أي مما يلي يُعد مثالاً صريحاً على حادث 'التلاعب بالبيانات'؟",
+                choices: [
+                    "تعطل موقع التجارة الإلكترونية لمدة ساعتين بسبب ضغط الزيارات",
+                    "تسرب أرقام بطاقات الدفع للعملاء ونشرها على موقع خارجي",
+                    "تغيير وتعديل السجلات في قاعدة بيانات الحسابات دون تصريح",
+                    "إجراء فحص دوري للمنافذ للتأكد من إغلاق المنفذ 22"
+                ],
+                correctIndex: 2,
+                hint: "التلاعب بالبيانات يعني تعديل السجلات داخل النظام دون إذن مشروع."
+            },
+            // 35 (الإجابة: أ)
+            {
+                type: "أسئلة كتاب الفائز",
+                q: "ما المرحلة التي تهدف إلى 'إزالة إصابة البرمجيات الخبيثة ومعالجة الثغرة'؟",
+                choices: [
+                    "الاستئصال (إزالة التهديد)",
+                    "الاستعادة",
+                    "الاحتواء",
+                    "التحضير"
+                ],
+                correctIndex: 0,
+                hint: "المثال المحلول ص 48: إزالة إصابة البرمجيات الخبيثة هي الاستئصال."
+            },
+            // 36 (الإجابة: د)
+            {
+                type: "أسئلة التقييمات",
+                q: "ماذا يقصد بـ 'الاكتشاف' في سياق نموذج الاستجابة للحوادث؟",
+                choices: [
+                    "إعادة تشغيل الخادم وتثبيت التحديثات الجديدة",
+                    "فصل الحواسب المصابة عن الإنترنت لعزل الضرر",
+                    "توثيق الدروس والنتائج بعد انتهاء الأزمة",
+                    "اكتشاف وتأكيد وقوع حادث أمني فعلي"
+                ],
+                correctIndex: 3,
+                hint: "الاكتشاف يعني رصد وتأكيد وقوع الحادث الأمني."
+            },
+            // 37 (الإجابة: ب)
+            {
+                type: "فكر كمهندس / اتخاذ قرار",
+                q: "فكر كمهندس: عند استعادة البيانات في مرحلة التعافي، ما الشرط الواجب توفره في النسخة الاحتياطية؟",
+                choices: [
+                    "أن تكون محفوظة على نفس القرص الصلب للجهاز المصاب",
+                    "أن تكون نسخة احتياطية سليمة ونظيفة خالية من البرمجيات الخبيثة والثغرة المسببة للحادث",
+                    "أن يتم فك تشفيرها قبل البدء بمرحلة الاستئصال",
+                    "أن تكون نسخة مطبوعة على أوراق ورقية فقط"
+                ],
+                correctIndex: 1,
+                hint: "الاستعادة من نسخة احتياطية سليمة وغير ملوثة تضمن عدم عودة التهديد فور تشغيل النظام."
+            },
+            // 38 (الإجابة: جـ)
+            {
+                type: "مفهوم أساسي",
+                q: "في مصفوفة تقييم المخاطر، إذا كان التأثير صغيراً والاحتمالية عالية، فما التقييم المعتمد للخطر؟",
+                choices: [
+                    "مرتفع جداً",
+                    "منخفض جداً",
+                    "متوسط الأولوية",
+                    "أولوية قصوى مطلقة"
+                ],
+                correctIndex: 2,
+                hint: "الشكل 2.3.2 وتمارين ص 50: تأثير منخفض مع احتمالية مرتفعة يصنف كخطر 'متوسط'."
+            },
+            // 39 (الإجابة: أ)
+            {
+                type: "أسئلة كتاب الفائز",
+                q: "أي الأنشطة التالية يمثل تطبيقاً عملياً لمرحلة 'الدروس المستفادة والتحسين'؟",
+                choices: [
+                    "تحليل سبب الحادث واتخاذ التدابير اللازمة لضمان عدم تكرار الحادث نفسه",
+                    "عزل الحواسيب المتضررة بفصل كابلات الشبكة",
+                    "حذف ملفات الفدية المشفرة وإغلاق المنافذ المفتوحة",
+                    "استرجاع ملفات الطلاب من النسخة الاحتياطية"
+                ],
+                correctIndex: 0,
+                hint: "المثال المحلول ص 48: تحليل السبب واتخاذ التدابير لضمان عدم التكرار هو الدروس المستفادة."
+            },
+            // 40 (الإجابة: د)
+            {
+                type: "أسئلة التقييمات",
+                q: "ما الحادث الأمني الذي يصف 'تسرب المعلومات الشخصية أو السرية إلى الخارج'؟",
+                choices: [
+                    "انقطاع الخدمة",
+                    "التلاعب بالبيانات",
+                    "تحديث البرامج",
+                    "تسرب المعلومات (Data Breach)"
+                ],
+                correctIndex: 3,
+                hint: "تسرب المعلومات يعني خروج البيانات الحساسة أو الشخصية لأطراف خارجية غير مصرح لها."
+            },
+            // 41 (الإجابة: ب)
+            {
+                type: "بما تفسر / علل",
+                q: "بما تفسر: خطورة الاعتماد على تقدير 'التأثير' بمفرده دون 'الاحتمالية' في تحديد حجم المخاطرة؟",
+                choices: [
+                    "لأن التأثير لا يمكن قياسه في الأنظمة الرقمية الحديثة",
+                    "لأن حدثاً ذو تأثير كبير جداً لكنه مستحيل الوقوع تقريباً لا يستوجب استنزاف ميزانية المؤسسة مقارنة بحدث مدمر وشديد التكرار",
+                    "لأن مصفوفة المخاطر تلغي دور التأثير وتعتمد على الاحتمالية فقط",
+                    "لأن التهديدات السيبرانية تتساوى جميعها في نسبة الاحتمالية"
+                ],
+                correctIndex: 1,
+                hint: "المثال المحلول ص 48: يتحدد حجم المخاطرة بالتأثير والاحتمالية معاً، وأحدهما بمفرده يعطي تقييماً مضللاً."
+            },
+            // 42 (الإجابة: جـ)
+            {
+                type: "فكر كمهندس / اتخاذ قرار",
+                q: "فكر كمهندس: ما المرحلة التي تعنى بإعداد سيناريوهات الطوارئ وتجهيز قنوات الاتصال المشفرة البديلة لفريق الاستجابة؟",
+                choices: [
+                    "مرحلة الاستئصال",
+                    "مرحلة الاستعادة",
+                    "مرحلة التحضير (Preparation)",
+                    "مرحلة الاكتشاف"
+                ],
+                correctIndex: 2,
+                hint: "فكر وتحد نفسك ص 50: إعداد الخطط والقنوات مسبقاً في مرحلة التحضير يجعل المراحل الأخرى أسرع."
+            },
+            // 43 (الإجابة: أ)
+            {
+                type: "مفهوم أساسي",
+                q: "وفقاً للمنهج، الحدث الذي يؤدي إلى 'أن تصبح الخدمة غير متاحة بسبب هجمات على الخادم' يسمى:",
+                choices: [
+                    "انقطاع الخدمة (Service Outage)",
+                    "تسرب المعلومات (Data Breach)",
+                    "التلاعب بالبيانات (Data Tampering)",
+                    "الاستئصال الأمني (Eradication)"
+                ],
+                correctIndex: 0,
+                hint: "كتاب الوزارة ص 46: انقطاع الخدمة يصف توقف الخدمة عن العمل للمستخدمين بسبب هجوم."
+            },
+            // 44 (الإجابة: د)
+            {
+                type: "أسئلة كتاب الفائز",
+                q: "ما التوصيف الدقيق لما تعنيه مرحلة 'الاستعادة' في التعامل مع هجمات الفدية؟",
+                choices: [
+                    "دفع مبلغ الفدية المالية للقراصنة لفك تشفير الملفات",
+                    "فصل الخوادم وحواسب المؤسسة عن شبكة الإنترنت",
+                    "حذف البرمجية الخبيثة وتغيير كافة كلمات المرور",
+                    "إعادة تشغيل الأنظمة واسترجاع الملفات المشفرة من النسخ الاحتياطية السليمة"
+                ],
+                correctIndex: 3,
+                hint: "الاستعادة بعد هجوم الفدية تعني استرجاع البيانات النظيفة من النسخ الاحتياطية وتشغيل النظام."
+            },
+            // 45 (الإجابة: ب)
+            {
+                type: "أسئلة التقييمات",
+                q: "في مصفوفة تقييم المخاطر، ما تقييم الخطر ذي 'التأثير المتوسط والاحتمالية المتوسطة'؟",
+                choices: [
+                    "مرتفع جداً",
+                    "متوسط",
+                    "منخفض جداً",
+                    "أولوية قصوى مطلقة"
+                ],
+                correctIndex: 1,
+                hint: "الشكل 2.3.2 ص 48: تأثير متوسط مع احتمالية متوسطة يصنف في خانة 'متوسط'."
+            },
+            // 46 (الإجابة: جـ)
+            {
+                type: "فكر كمهندس / اتخاذ قرار",
+                q: "فكر كمهندس: إذا تساوت درجتان لمخاطرتين مختلفتين في المصفوفة، فكيف يرتب الفريق أولويات المعالجة وفق المنهج؟",
+                choices: [
+                    "إلغاء معالجة الخطرين معاً لتوفير النفقات",
+                    "اختيار الخطر الأسهل في الإغلاق وتجاهل الخطر الآخر نهائياً",
+                    "الرجوع إلى سياق العمل والضوابط المتاحة وتقدير الخبراء للبت في الأولوية",
+                    "الاعتماد على القرعة العشوائية لاختيار أحدهما"
+                ],
+                correctIndex: 2,
+                hint: "كتاب الوزارة ص 48 وتمارين ص 50: عند التساوي نرجع لدرجات المصفوفة والسياق والضوابط المتاحة."
+            },
+            // 47 (الإجابة: أ)
+            {
+                type: "مفهوم أساسي",
+                q: "أي العبارات التالية تصف بدقة طبيعة التسلسل العام لمراحل الاستجابة للحوادث؟",
+                choices: [
+                    "تسلسل عام يساعد على تنظيم الاستجابة مع إمكانية تداخل بعض الأنشطة أو العودة لمراحل سابقة",
+                    "تسلسل خطي جامد يحظر قطيعاً الرجوع لأي مرحلة سابقة بعد بدئها",
+                    "ترتيب عشوائي يترك لكل موظف حرية اختيار المرحلة التي يفضلها",
+                    "تسلسل يطبق فقط بعد تعطل النظام وتوقفه التام لمدة شهر"
+                ],
+                correctIndex: 0,
+                hint: "الفكرة الأساسية ص 46: تسلسل عام منظم مع إمكانية التداخل والعودة لمراحل سابقة."
+            },
+            // 48 (الإجابة: د)
+            {
+                type: "أسئلة كتاب الفائز",
+                q: "ما المرحلة التي تعد الأصعب تنفيذاً تحت الضغط النفسي الشديد أثناء وقوع الحادث الأمني؟",
+                choices: [
+                    "مرحلة الاستعادة",
+                    "مرحلة الدروس المستفادة والتحسين",
+                    "مرحلة التحضير المسبق",
+                    "مرحلة الاحتواء (Containment)"
+                ],
+                correctIndex: 3,
+                hint: "تمارين ص 50 وفكر وتحد نفسك: الاحتواء هو الأصعب تحت الضغط لحصار الضرر ومنع اتساعه سريعاً."
+            },
+            // 49 (الإجابة: ب)
+            {
+                type: "أسئلة التقييمات",
+                q: "أي الأنشطة التالية لا يُعد إجراءً صحيحاً أثناء مرحلة الاستجابة لهجوم برمجية فدية نشط؟",
+                choices: [
+                    "عزل الأجهزة المصابة عن الشبكة فوراً لمنع انتشار التشفير",
+                    "البدء الفوري باسترجاع النسخ الاحتياطية وتشغيلها قبل إزالة البرمجية الخبيثة وسد الثغرة",
+                    "التحقق من إزالة البرمجية الخبيثة وسد الثغرة المستغلة في مرحلة الاستئصال",
+                    "توثيق أسباب الحادث وتحديث خطط الأمان في مرحلة الدروس المستفادة"
+                ],
+                correctIndex: 1,
+                hint: "البدء بالاستعادة قبل الاستئصال خطأ خطير يؤدي لتشفير النسخ المستعادة مجدداً."
+            },
+            // 50 (الإجابة: جـ)
+            {
+                type: "ختام الوحدة الثانية",
+                q: "ما المعادلة الذهبية المتكاملة لإدارة الأزمات في الأمن السيبراني وفق خلاصة الدرس 2-3؟",
+                choices: [
+                    "الاعتماد على النسخ الاحتياطي بمفرده وإلغاء جدران الحماية ومراحل الاستجابة",
+                    "دفع الفدية المالية للقراصنة فوراً لتجنب إضاعة وقت الموظفين",
+                    "الاستعداد المسبق بخطة استجابة ذات مراحل ست، واحتواء الضرر أولاً، واستئصال التهديد، والاستعادة الآمنة، مع تحديد أولويات المخاطر وفق (التأثير × الاحتمالية)",
+                    "معالجة كافة المخاطر بالتساوي في وقت واحد دون تصنيف أو مصفوفة أولويات"
+                ],
+                correctIndex: 2,
+                hint: "خلاصة الدرس 2-3: خطة استجابة سداسية منظمة + مصفوفة أولويات المخاطر (التأثير × الاحتمالية)."
+            }
+        ];
+
+        let curQIdx = 0;
+        let selectedOptions = new Array(quizBank.length).fill(null);
+
+        function renderQuickNav() {
+            const container = document.getElementById('quickNavGrid');
+            if (!container) return;
+
+            let gridHtml = '';
+            let answeredCount = 0;
+
+            quizBank.forEach((_, idx) => {
+                const isCurrent = curQIdx === idx;
+                const isAnswered = selectedOptions[idx] !== null;
+                if (isAnswered) answeredCount++;
+
+                let stateClass = 'bg-white text-beschool-slate border-slate-200 hover:border-beschool-orange';
+                if (isAnswered) {
+                    stateClass = 'bg-emerald-50 text-emerald-700 border-emerald-300 font-black';
+                }
+                if (isCurrent) {
+                    stateClass = 'bg-beschool-orange text-white border-beschool-orange ring-2 ring-orange-200 font-black';
+                }
+
+                gridHtml += `
+                    <button onclick="jumpToQuestion(${idx})" class="h-7 rounded-lg border text-[11px] flex items-center justify-center transition ${stateClass}">
+                        ${idx + 1}
+                    </button>
+                `;
+            });
+
+            container.innerHTML = gridHtml;
+            const badge = document.getElementById('quizAnsweredBadge');
+            if (badge) {
+                badge.innerText = `تمت الإجابة: ${answeredCount} / ${quizBank.length}`;
+            }
+        }
+
+        function jumpToQuestion(targetIndex) {
+            curQIdx = targetIndex;
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const qData = quizBank[curQIdx];
+            document.getElementById('activeQIndex').innerText = curQIdx + 1;
+            document.getElementById('totalQCount').innerText = quizBank.length;
+
+            renderQuickNav();
+
+            let typeBadgeColor = 'bg-orange-100 text-beschool-orange border-orange-200';
+            if (qData.type.includes('بما تفسر')) typeBadgeColor = 'bg-blue-100 text-blue-700 border-blue-200';
+            if (qData.type.includes('فكر كمهندس')) typeBadgeColor = 'bg-purple-100 text-purple-700 border-purple-200';
+            if (qData.type.includes('أسئلة التقييمات')) typeBadgeColor = 'bg-emerald-100 text-emerald-700 border-emerald-200';
+            if (qData.type.includes('كتاب الفائز')) typeBadgeColor = 'bg-amber-100 text-amber-800 border-amber-200';
+
+            let choicesHtml = '';
+            qData.choices.forEach((cText, i) => {
+                const isSelected = selectedOptions[curQIdx] === i;
+                const borderClass = isSelected 
+                    ? 'border-beschool-orange bg-orange-50 font-black ring-1 ring-beschool-orange' 
+                    : 'border-beschool-border hover:bg-slate-50 font-medium';
+                
+                const circleClass = isSelected
+                    ? 'bg-beschool-orange text-white border-beschool-orange'
+                    : 'bg-white text-beschool-slate border-slate-300';
+
+                choicesHtml += `
+                    <div onclick="pickQuizAnswer(${i})" class="p-3 sm:p-3.5 rounded-xl border ${borderClass} cursor-pointer transition flex items-center gap-3 text-right">
+                        <div class="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold ${circleClass} shrink-0">
+                            ${['أ', 'ب', 'ج', 'د'][i]}
+                        </div>
+                        <span class="text-xs sm:text-sm text-beschool-navy leading-relaxed">${cText}</span>
+                    </div>
+                `;
+            });
+
+            document.getElementById('quizContainer').innerHTML = `
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-[11px] font-black px-2.5 py-0.5 rounded-md border ${typeBadgeColor}">
+                            <i class="fa-solid fa-tag ml-1"></i> نوع السؤال: ${qData.type}
+                        </span>
+                        <button onclick="toggleHint(${curQIdx})" class="text-[11px] font-bold text-beschool-orange hover:underline flex items-center gap-1">
+                            <i class="fa-regular fa-lightbulb"></i> تلميح تعليمي
+                        </button>
+                    </div>
+
+                    <div id="hintBox_${curQIdx}" class="hidden p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs leading-relaxed text-right">
+                        <strong class="block mb-0.5">إرشاد للتفكير:</strong>
+                        ${qData.hint}
+                    </div>
+
+                    <h4 class="text-sm sm:text-base font-black text-beschool-navy leading-relaxed pt-1 text-right">
+                        ${curQIdx + 1}. ${qData.q}
+                    </h4>
+                    
+                    <div class="space-y-2 pt-1">${choicesHtml}</div>
+                    
+                    <div id="quizAlert" class="hidden p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold text-right">
+                        <i class="fa-solid fa-circle-exclamation ml-1"></i> يُرجى اختيار إجابة للمتابعة!
+                    </div>
+                </div>
+            `;
+
+            const prevBtn = document.getElementById('btnPrevQ');
+            if (curQIdx > 0) prevBtn.classList.remove('hidden');
+            else prevBtn.classList.add('hidden');
+
+            const nextBtn = document.getElementById('btnNextQ');
+            if (curQIdx === quizBank.length - 1) {
+                nextBtn.innerHTML = `<span>إنهاء وحساب النتيجة</span> <i class="fa-solid fa-check-double mr-1"></i>`;
+            } else {
+                nextBtn.innerHTML = `<span>السؤال التالي</span> <i class="fa-solid fa-arrow-left mr-1"></i>`;
+            }
+        }
+
+        function toggleHint(idx) {
+            const h = document.getElementById(`hintBox_${idx}`);
+            if (h) h.classList.toggle('hidden');
+        }
+
+        function pickQuizAnswer(choiceIdx) {
+            selectedOptions[curQIdx] = choiceIdx;
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            if (selectedOptions[curQIdx] === null) {
+                const alrt = document.getElementById('quizAlert');
+                if (alrt) alrt.classList.remove('hidden');
+                return;
+            }
+            if (curQIdx < quizBank.length - 1) {
+                curQIdx++;
+                renderQuestion();
+            } else {
+                finalizeQuiz();
+            }
+        }
+
+        function prevQuestion() {
+            if (curQIdx > 0) {
+                curQIdx--;
+                renderQuestion();
+            }
+        }
+
+        function finalizeQuiz() {
+            let score = 0;
+            quizBank.forEach((item, idx) => {
+                if (selectedOptions[idx] === item.correctIndex) {
+                    score++;
+                }
+            });
+
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('btnPrevQ').classList.add('hidden');
+            document.getElementById('btnNextQ').classList.add('hidden');
+
+            const scoreBox = document.getElementById('quizScoreboard');
+            scoreBox.classList.remove('hidden');
+
+            const percent = Math.round((score / quizBank.length) * 100);
+            document.getElementById('quizScoreText').innerHTML = `
+                حصلت على <span class="text-beschool-orange text-lg font-black">${score} من أصل ${quizBank.length}</span> بنسبة <span class="text-emerald-600 text-lg font-black">${percent}%</span>.
+            `;
+
+            const statsElem = document.getElementById('quizStatsDetails');
+            if (statsElem) {
+                statsElem.innerText = `الإجابات الصحيحة: ${score} | غير الصحيحة أو المتروكة: ${quizBank.length - score}`;
+            }
+
+            // تطبيق التغذية الراجعة الواقعية المتوازنة لعمر 16 سنة
+            applyTargetedFeedback(percent);
+
+            // توليد المراجعة التفصيلية لـ 50 سؤالاً
+            renderDetailedReview();
+
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+        }
+
+        function applyTargetedFeedback(percent) {
+            const card = document.getElementById('motivationCard');
+            const iconContainer = document.getElementById('scoreIconContainer');
+            if (!card) return;
+
+            const name = currentStudentName || "يا بطل";
+
+            if (percent >= 95) {
+                // 95% فما فوق: ممتاز
+                iconContainer.className = "w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl mx-auto shadow-sm";
+                iconContainer.innerHTML = '<i class="fa-solid fa-trophy"></i>';
+                card.className = "max-w-xl mx-auto p-4 sm:p-5 rounded-2xl bg-emerald-50 border-2 border-emerald-400 text-right space-y-2 shadow-xs";
+                card.innerHTML = `
+                    <div class="flex items-center gap-2 text-emerald-800 font-black text-sm sm:text-base">
+                        <i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>
+                        <span>التقدير: ممتاز (فوق 95%)</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-emerald-950 leading-relaxed font-bold">
+                        أحسنت يا ${name}، مجهود ممتاز وتركيز واضح في حل الأسئلة غير المباشرة وفهم عميق لمراحل الاستجابة وإدارة المخاطر. حافظ على نفس المستوى والاجتهاد في باقي المواد والوحدات.
+                    </p>
+                `;
+            } else if (percent >= 90) {
+                // 90% إلى 94%: جيد جداً
+                iconContainer.className = "w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-3xl mx-auto shadow-sm";
+                iconContainer.innerHTML = '<i class="fa-solid fa-medal"></i>';
+                card.className = "max-w-xl mx-auto p-4 sm:p-5 rounded-2xl bg-blue-50 border-2 border-blue-400 text-right space-y-2 shadow-xs";
+                card.innerHTML = `
+                    <div class="flex items-center gap-2 text-blue-800 font-black text-sm sm:text-base">
+                        <i class="fa-solid fa-award text-blue-600 text-lg"></i>
+                        <span>التقدير: جيد جداً (من 90% إلى 94%)</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-blue-950 leading-relaxed font-bold">
+                        أداء طيب يا ${name}، إجاباتك تدل على استيعابك للمفاهيم الأساسية وخطة الاستجابة ومصفوفة المخاطر. راجع النقاط البسيطة التي أخطأت فيها في القائمة بالأسفل لتصل للدرجة الكاملة.
+                    </p>
+                `;
+            } else {
+                // أقل من 90%: محتاج تذاكر
+                iconContainer.className = "w-16 h-16 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-3xl mx-auto shadow-sm";
+                iconContainer.innerHTML = '<i class="fa-solid fa-book-open-reader"></i>';
+                card.className = "max-w-xl mx-auto p-4 sm:p-5 rounded-2xl bg-amber-50 border-2 border-amber-400 text-right space-y-2 shadow-xs";
+                card.innerHTML = `
+                    <div class="flex items-center gap-2 text-amber-900 font-black text-sm sm:text-base">
+                        <i class="fa-solid fa-circle-exclamation text-amber-600 text-lg"></i>
+                        <span>النتيجة: أقل من 90% — محتاج تذاكر تاني</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-amber-950 leading-relaxed font-bold">
+                        يا ${name}، الأسئلة كانت محتاجة تركيز وفهم دقيق، والنتيجة بتوضح إنك محتاج تراجع الشرح بتركيز أكبر وتفهم المفاهيم اللي وقعت فيها، خصوصاً ترتيب مراحل الاستجابة ومصفوفة المخاطر وسيناريوهات الفدية. راجع مراجعة الأسئلة بالأسفل وأعد الاختبار لتثبيت المعلومة.
+                    </p>
+                `;
+            }
+        }
+
+        function renderDetailedReview() {
+            const container = document.getElementById('quizReviewList');
+            if (!container) return;
+
+            let reviewHtml = '';
+
+            quizBank.forEach((qItem, idx) => {
+                const userChoiceIdx = selectedOptions[idx];
+                const isCorrect = userChoiceIdx === qItem.correctIndex;
+                const wasAnswered = userChoiceIdx !== null;
+
+                const statusBadge = isCorrect
+                    ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200"><i class="fa-solid fa-circle-check text-emerald-600"></i> إجابة صحيحة</span>'
+                    : '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-black bg-rose-100 text-rose-800 border border-rose-200"><i class="fa-solid fa-circle-xmark text-rose-600"></i> إجابة خاطئة</span>';
+
+                const borderCardClass = isCorrect
+                    ? 'border-emerald-200 bg-white'
+                    : 'border-rose-200 bg-rose-50/20';
+
+                const userChoiceText = wasAnswered
+                    ? qItem.choices[userChoiceIdx]
+                    : 'لم تجب على هذا السؤال';
+
+                const correctAnswerText = qItem.choices[qItem.correctIndex];
+
+                reviewHtml += `
+                    <div class="p-4 rounded-xl border ${borderCardClass} text-xs sm:text-sm space-y-2.5 text-right transition">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                            <span class="font-black text-beschool-navy">السؤال ${idx + 1}: ${qItem.type}</span>
+                            ${statusBadge}
+                        </div>
+                        
+                        <p class="font-bold text-beschool-slate leading-relaxed">
+                            ${qItem.q}
+                        </p>
+
+                        <div class="space-y-1.5 pt-1">
+                            <div class="p-2.5 rounded-lg ${isCorrect ? 'bg-emerald-50 text-emerald-900 border border-emerald-200' : 'bg-rose-50 text-rose-900 border border-rose-200'}">
+                                <strong>إجابتك:</strong> ${userChoiceText}
+                            </div>
+                            
+                            ${!isCorrect ? `
+                                <div class="p-2.5 rounded-lg bg-emerald-50 text-emerald-900 border border-emerald-200">
+                                    <strong>الإجابة الصحيحة المعتمدة:</strong> ${correctAnswerText}
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-600 text-[11px] leading-relaxed">
+                            <strong class="text-beschool-navy block mb-0.5"><i class="fa-regular fa-lightbulb text-amber-500 ml-1"></i> التوضيح العلمي والتلميح:</strong>
+                            ${qItem.hint}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = reviewHtml;
+        }
+
+        function resetQuizEngine() {
+            curQIdx = 0;
+            selectedOptions = new Array(quizBank.length).fill(null);
+            document.getElementById('quizScoreboard').classList.add('hidden');
+            document.getElementById('quizContainer').classList.remove('hidden');
+            document.getElementById('btnNextQ').classList.remove('hidden');
+            renderQuestion();
+            window.scrollTo({ top: 350, behavior: 'smooth' });
+        }
+
+        window.onload = function() {
+            detectEgyptianVoiceL23();
+            renderQuestion();
+            setIRPhase(1);
+        };
+    </script>
+</body>
+</html>
